@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>疼痛解碼：浮動分欄版</title>
+    <style>
+        /* 基礎樣式 */
+        body {
+            font-family: "Helvetica Neue", Arial, "Heiti TC", "Microsoft JhengHei", sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.8;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        /* ↓↓↓ 核心結構：三欄 Grid Layout ↓↓↓ */
+        .main-wrapper {
+            max-width: 1200px; /* 增加最大寬度 */
+            margin: 0 auto;
+            display: grid;
+            /* 1.5fr (左邊留白) | 3.5fr (故事居中) | 1.5fr (右側提示欄) */
+            grid-template-columns: 1.5fr 3.5fr 1.5fr; 
+            gap: 20px;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* 左欄 (留白) */
+        .left-spacer {
+            grid-column: 1 / 2;
+            padding-right: 20px;
+        }
+        
+        /* 中央欄 (故事內容) */
+        .story-content {
+            grid-column: 2 / 3;
+            padding-right: 20px;
+        }
+        .story-content p {
+            margin-bottom: 2.2em; 
+            font-size: 1.1em;
+            text-align: justify;
+            position: relative;
+        }
+        
+        /* 第三欄 (浮動提示區) */
+        .hint-sidebar {
+            grid-column: 3 / 4;
+            padding-top: 150px; /* 留出標題空間 */
+        }
+
+        /* 浮動提示按鈕 CSS */
+        .hint-wrapper {
+            width: 100%;
+            margin-bottom: 30px; 
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        .hint-wrapper:hover {
+            transform: translateX(5px);
+        }
+        .hint-icon {
+            width: 38px;
+            height: 38px;
+            background: #e74c3c;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+            margin-right: 10px;
+        }
+        .hint-label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1em;
+            margin-top: 5px;
+        }
+        .hint-subtext {
+            font-size: 0.85em;
+            color: #555;
+        }
+        /* ↑↑↑ 浮動提示區塊 CSS ↑↑↑ */
+
+        /* ↓↓↓ 滿版燈箱 (Modal/Lightbox) CSS ↓↓↓ */
+        .modal {
+            display: none; /* 初始狀態：隱藏 */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9); /* 半透明黑背景 */
+            align-items: center; /* 讓內容居中 */
+            justify-content: center; /* 讓內容居中 */
+            padding: 20px;
+        }
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 900px;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #aaa;
+            font-size: 36px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .modal-body h2 { color: #2c3e50; margin-bottom: 15px; }
+        .modal-video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            margin-bottom: 20px;
+        }
+        .modal-video-container video { width: 100%; height: 100%; border-radius: 8px; display: block; }
+        .modal-transcript p { font-size: 1em; color: #555; text-align: justify; }
+        /* ↑↑↑ 滿版燈箱 (Modal/Lightbox) CSS ↑↑↑ */
+
+        /* 響應式：手機版變回單欄 */
+        @media (max-width: 1000px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+                gap: 0;
+                padding: 20px;
+            }
+            .story-content {
+                grid-column: 1 / 2;
+                padding: 0;
+            }
+            .left-spacer {
+                display: none;
+            }
+            .hint-sidebar {
+                grid-column: 1 / 2;
+                padding-top: 0;
+                /* 在手機上，讓提示回到內文下方 */
+            }
+            .hint-wrapper {
+                width: 100%;
+                margin: 20px 0;
+                text-align: left; 
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="header"><h1>疼痛解碼：一位醫療人員的修復旅程</h1></div>
+
+    <div class="main-wrapper">
+        <div class="left-spacer"></div>
+
+        <div class="story-content">
+            <h2 class="thematic-title">前言：看不見的傷，與迷路的我們</h2>
+            <p>數據是冰冷的，但痛是熱的。在這些龐大的醫療數據背後，是一個個在診間迷路的人。南瓜 (化名)，年齡介於 35 至 40 歲，是一名醫院衛教人員。即便身在醫療體系內，當疼痛來襲，她發現自己依然是這座迷宮中的迷路者。</p>
+
+            <h2 class="thematic-title">SOP 裡的迴圈，與被否定的痛</h2>
+            
+            <p>南瓜的工作經常需要搬重物，因此長期都有腰酸背痛的問題。2016 年左右，她的腰開始頻繁閃到。閃到就去復健診所治療，「好了就不理它」——這樣的「閃到才治療」模式維持了五六年。那些年，南瓜在「不痛」、止痛消炎藥、肌肉鬆弛劑與熱敷、拉腰、電療間循環。</p>
+            
+            <p>儘管南瓜的核磁共振影像上顯示椎間盤「破掉」，但是骨科醫師認為她的症狀表現並沒有嚴重到需要開刀，便給了她一張「很基本的衛教單」。拿著單子走出診間的南瓜，盯著上面的動作越看越不確定——「以我現在的狀況，真的可以做這些嗎？會不會更嚴重？」 </p>
+
+            <h2 class="thematic-title">心裡的沼澤，身體會記得</h2>
+            <p>直到 2025 年初，又復發了。物理治療師敏銳地察覺到，南瓜平常治療中會「不自覺地把手抓著」，且放鬆後又會再次緊繃。察覺異樣的物理治療師主動關心，南瓜因而吐露自己因早年創傷正在接受心理治療。這份難以交付的信任，源於南瓜過去複雜的創傷經驗。而在這層層疊疊、導致她身體慣性緊繃的壓力源之中，來自母親的影響尤為具體且直接。她提到：「像我之前有一次就是我媽突然出車禍，然後我就太緊張我就直接閃到，就是整個肌肉是攣縮這樣......是我，是我沒有想到那麼快要跟我媽見面，然後我就很焦慮。」</p>
+
+            <h2 class="thematic-title">快轉的治療，與慢不下來的生存</h2>
+            <p>南瓜的治療經驗，映照出家中兩代人截然不同的觀念落差。相較於南瓜願意投入自費物理治療，受頸椎間盤問題所苦的父親，卻抱持著截然不同的態度。「因為他（南瓜父親）就是吃藥派，他就是覺得吃藥、開刀才是有效的東西...覺得一兩次看不到效果就是騙人的。」</p>
+            
+            <p>然而，南瓜深刻理解，這份對「速效」的執著，背後其實藏著深沉的生存焦慮。「他們就是想要馬上好起來，因為有時候也是經濟的狀況，不希望工作斷掉。」</p>
+
+            <h2 class="thematic-title">不完美的康復：在迷宮裡安放一張椅子</h2>
+            <p>在那沒有終點的疼痛迷宮裡，南瓜不再執著於尋找標示著「完全痊癒」的出口，而是學會在蜿蜒的轉角處，適時為自己安放一張可以喘息的椅子。</p>
+            
+        </div>
+
+        <div class="hint-sidebar">
+            <div class="hint-list">
+                <div class="hint-wrapper" style="margin-top: 150px;" onclick="openModal('qa1')">
+                    <span class="hint-icon">SOP</span>
+                    <span class="hint-subtext">機制翻譯</span>
+                    <span class="hint-label">健保循環的真相</span>
+                </div>
+                <div class="hint-wrapper" style="margin-top: 280px;" onclick="openModal('qa2')">
+                    <span class="hint-icon">MRI</span>
+                    <span class="hint-subtext">外科觀點</span>
+                    <span class="hint-label">影像不等於痛</span>
+                </div>
+                <div class="hint-wrapper" style="margin-top: 480px;" onclick="openModal('qa3')">
+                    <span class="hint-icon">$$</span>
+                    <span class="hint-subtext">商業與專業</span>
+                    <span class="hint-label">是賺業績還是專業？</span>
+                </div>
+                <div class="hint-wrapper" style="margin-top: 750px;" onclick="openModal('qa4')">
+                    <span class="hint-icon">🧠</span>
+                    <span class="hint-subtext">心理連結</span>
+                    <span class="hint-label">身體記得的傷</span>
+                </div>
+                <div class="hint-wrapper" style="margin-top: 950px;" onclick="openModal('qa5')">
+                    <span class="hint-icon">💵</span>
+                    <span class="hint-subtext">世代差異</span>
+                    <span class="hint-label">不只是沒耐心</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="expertModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal(event)">&times;</span>
+            <div class="modal-body">
+                </div>
+        </div>
+    </div>
+    <div class="epilogue-box">
+        <h3>結語：不用海誓山盟，只要一點點微光</h3>
+        
+        <div class="pt-quote">
+            <strong style="color:#2c3e50;">方藝靜 物理治療師：</strong>
+            <p>「我相信那個痛苦跟這個疼痛是真實的，所以我覺得就是，你們不用太自責自己說，就是為什麼自己一直在這個狀態...但其實是你從生活中很多小小的事情改變，它其實就會引起一連串的反應。」</p>
+        </div>
+        
+        <div class="veena-das-quote">
+            <p>人類學家 Veena Das 曾寫道：</p>
+            <p style="font-weight: bold; font-size: 1.2em; margin-top: 10px;">「疼痛不僅是指向內在狀態，</p>
+            <p style="font-weight: bold; font-size: 1.2em; margin-bottom: 10px;">更是尋求他人承認的宣稱。」</p>
+        </div>
+        
+        <p class="small-note" style="margin-top: 30px;">
+            <strong style="color:#2c3e50;">神經外科 陳則宇醫師：</strong> 疼痛就是日常生活的一部分，不要那麼排斥、抗拒它，那是你的身體給你的訊號，跟你說該休息了。
+        </p>
+        <p style="font-size: 1em; color: #4a5568; margin-top: 20px;">願每一份疼痛，都能在這裡找到被接住的可能。</p>
+        
+        <div class="small-note">
+            <p>製作團隊名單 (Credits) | 醫療免責聲明 (Disclaimer)</p>
+        </div>
+    </div>
+
+    <script>
+        // 專家的訪談資料庫 (使用單一影片URL)
+        const HINT_DATA = {
+            videoUrl: "https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4",
+            
+            'qa1': {
+                title: "健保循環的真相：為什麼治療路徑會斷裂？",
+                speaker: "方藝靜 物理治療師",
+                transcript: ["「因為（健保制度限制）時間跟人力的成本情況下，他們（物理治療師）會很有壓力......變得很像是一個工廠作業的狀態，就是你要很有效率，你就是要有SOP，所以這個狀態是可以消化最多的（病）人。」","「（患者）不知道他自己的治療計畫......所以他不知道自己下一步要做什麼......或者說他可能就（症狀）好一點，他或許就先不做了，然後等到下一次又再復發的時候，他就覺得怎麼又來一次，所以衛教其實真的很重要。」"]
+            },
+            'qa2': {
+                title: "影像報告與疼痛表現不一致：外科醫師怎麼看？",
+                speaker: "神經外科 陳則宇醫師 & 物理治療師",
+                transcript: ["【陳醫師】：「我們影像學只能看一些結構性的問題......但是他如果這個疼痛跟他嚴重程度不成比例，那我們就要去想其他原因，包括他是不是心理上、情緒上有一些狀況才會讓他痛得不好。」","【物理治療師】：「影像它只是作為輔助用的......有時候他可能雖然影像上看起來有一點點突出，可是他『超痛』，那這個超痛跟這個影像好像沒有這麼的 match 在一起。應該先把他實際上現在面臨的疼痛先去處理，而不是去處理他那一塊凸出來一點點的椎間盤突出。」"]
+            },
+            'qa3': {
+                title: "是賺業績還是專業？——當自費選項出現時",
+                speaker: "神經外科 陳則宇醫師 & 物理治療師",
+                transcript: ["【物理治療師】：「我覺得即便真的時間很少......那你就把他（患者）轉（介）出去啊。你就跟他說：『我真的覺得你的狀態，其實是是看自費的物理治療會對你更有幫助』......你（物理治療師）有這個資源讓這個病人再去到更好的地方，其實你就已經完成你在這裡的價值。」","【陳醫師】：「健保其實提供的是一個保底的......（但是）因為自費有自費的好處，微創就是破壞小、傷口小、恢復快。健保提供的必須的、基本的都有提供，微創（手術）當然更好，那要不要花錢就看人。」"]
+            },
+            'qa4': {
+                title: "心裡的傷，身體會記得：創傷與疼痛的連結",
+                speaker: "方藝靜 物理治療師 & 陳則宇醫師",
+                transcript: ["【物理治療師】：「其實在統計上來說，有童年創傷的人，對於發生這個慢性疼痛的狀態，其實是非常高比例的...如果說他自己可以很明確的覺察到，他自己是因為他今天要去見他（媽媽），所以他就會馬上就被 cue 起這個不舒服的感覺...那或許你 cue 起疼痛的機會就會變少。」","【陳醫師】：「心理會影響生理，生理會回過頭來影響心理...問題還有一個根源，比如說他跟他媽要相處之前壓力就是很大，這已經超過了疼痛的議題，這不是醫生一個人可以解決的。」"]
+            },
+            'qa5': {
+                title: "不只是沒耐心，更是「生存焦慮」：長輩的速效期待",
+                speaker: "方藝靜 物理治療師 & 陳則宇醫師",
+                transcript: ["【物理治療師】：「以現代社會來說，就是大家都要求很像速食一樣嘛......如果說他們就是覺得這個是一個非常花錢的跟花時間的一個狀態，他們可能就沒有辦法接受。」","【陳醫師】：「我覺得要趕快好是人之常情啦......很多時候經濟因素是比較複雜的，比如說他可能工作沒辦法請假那麼久，或者是說他擔心手術完之後，如果要休息很長一段時間，他的經濟會有困難......因為手術開了之後就是需要恢復（期）。」"]
+            }
+        };
+
+        const modal = document.getElementById('expertModal');
+        const modalBody = modal.querySelector('.modal-body');
+        
+        function openModal(hintId) {
+            const data = HINT_DATA[hintId];
+            if (!data) return;
+
+            // 1. 構建影片播放器
+            const videoHTML = `
+                <div class="modal-video-container">
+                    <video controls playsinline width="100%" height="100%" style="border-radius: 8px;">
+                        <source src="${HINT_DATA.videoUrl}" type="video/mp4">
+                        您的瀏覽器不支援影片播放。
+                    </video>
+                </div>
+            `;
+
+            // 2. 構建逐字稿
+            const transcriptHTML = data.transcript.map(p => `<p>${p}</p>`).join('');
+
+            // 3. 注入內容
+            modalBody.innerHTML = `
+                <h2>${data.title}</h2>
+                <p style="color: #e74c3c; font-weight: 600;">🎙️ 採訪對象: ${data.speaker}</p>
+                ${videoHTML}
+                <div class="modal-transcript">
+                    <h3 style="color: #2c3e50; font-size: 1.1em; margin-bottom: 10px;">逐字稿節錄</h3>
+                    ${transcriptHTML}
+                </div>
+            `;
+            
+            // 4. 顯示 Modal (將 display 設置為 flex，方便居中)
+            modal.style.display = 'flex';
+            
+            // 5. 在 Modal 顯示後，讓影片開始載入
+            const videoElement = modalBody.querySelector('video');
+            if(videoElement) {
+                videoElement.load();
+            }
+        }
+
+        function closeModal(event) {
+            if (event.target === modal || event.target.className === 'close-btn') {
+                // 停止影片播放
+                const videoElement = modalBody.querySelector('video');
+                if (videoElement) {
+                    videoElement.pause();
+                    videoElement.currentTime = 0; // 回到開始
+                }
+                modal.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // 確保 Modal 在 DOM 載入後是隱藏的，但主要由 CSS 控制
+             // modal.style.display = 'none'; 
+        });
+
+    </script>
+</body>
+</html>
