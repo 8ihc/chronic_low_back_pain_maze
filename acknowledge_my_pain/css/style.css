@@ -71,31 +71,6 @@ strong {
     flex-shrink: 0;
 }
 
-/* Subtitle 預留空間 */
-.media-subtitle {
-    min-height: 40px;
-    margin-bottom: 25px;
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 0.95rem;
-    color: #666;
-    font-style: italic;
-    text-align: center;
-    letter-spacing: 0.05em;
-}
-
-/* 音檔控制 - 極簡設計 */
-.audio-controls {
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    box-shadow: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
 /* NYT-Style Audio Story Player */
 .audio-story-player {
     width: 100%;
@@ -120,14 +95,14 @@ strong {
     align-items: center;
     justify-content: center;
     padding: 0 40px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     flex-shrink: 1;
 }
 
 .subtitle-text {
     font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 2rem;
-    line-height: 1.6;
+    font-size: 1.8rem;
+    line-height: 1.2;
     color: #1a1a1a;
     text-align: center;
     opacity: 0;
@@ -144,8 +119,8 @@ strong {
 
 /* Progress Mute Button - NYT Style with Ring */
 .progress-mute-btn {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: #ffffff;
     border: none;
@@ -171,8 +146,8 @@ strong {
 /* SVG Icon Styling */
 .progress-mute-btn svg,
 .global-audio-btn svg {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     fill: #544733;
     display: block;
 }
@@ -187,7 +162,7 @@ strong {
 .progress-mute-btn::before {
     content: '';
     position: absolute;
-    inset: -4px;
+    inset: -3px;
     border-radius: 50%;
     padding: 4px;
     background: conic-gradient(
@@ -216,12 +191,12 @@ strong {
     
     .media-image {
         max-height: 35vh;
-        max-width: 70%;
+        max-width: 85%;
         margin-bottom: 10px;
     }
     
     .subtitle-text {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
         padding: 0 20px;
     }
     
@@ -244,24 +219,30 @@ strong {
         width: 24px;
         height: 24px;
     }
-}
+    
+    header h1 {
+        font-size: 2.5rem;
+    }
 
-/* 音檔資訊文字 */
-.audio-info {
-    color: #2a2a2a;
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 0.9rem;
-    text-align: center;
-    line-height: 1.6;
-    letter-spacing: 0.05em;
-}
+    header p {
+        font-size: 1.1rem;
+    }
 
-.audio-number {
-    font-weight: 400;
-    font-size: 1rem;
-    color: #666;
-    font-style: italic;
-    letter-spacing: 0.5px;
+    .content-section {
+        font-size: 1rem;
+        padding: 40px 15px;
+    }
+    
+    .global-audio-btn {
+        padding: 6px 16px;
+        font-size: 0.8rem;
+        margin: 50px auto 0;
+    }
+    
+    .global-audio-btn svg {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 header {
@@ -529,31 +510,6 @@ footer {
     text-align: left;
 }
 
-@media (max-width: 768px) {
-    .media-image {
-        max-width: 85%;
-    }
-
-    header h1 {
-        font-size: 2.5rem;
-    }
-
-    header p {
-        font-size: 1.1rem;
-    }
-
-    .content-section {
-        font-size: 1rem;
-        padding: 40px 15px;
-    }
-
-    .play-btn {
-        width: 55px;
-        height: 55px;
-        font-size: 18px;
-    }
-}
-
 /* 浮動提示框樣式 - demo2 風格 */
 .hint-wrapper {
     margin: 2rem 0;
@@ -653,35 +609,6 @@ footer {
     font-size: 0.75rem;
 }
 
-@media (max-width: 768px) {
-    .global-audio-btn {
-        padding: 5px 14px;
-        font-size: 0.7rem;
-        margin: 50px auto 0;
-    }
-    
-    .global-audio-btn svg {
-        width: 16px;
-        height: 16px;
-    }
-}
-
-@media (max-width: 768px) {
-    .global-audio-btn {
-        padding: 6px 16px;
-        font-size: 0.8rem;
-    }
-    
-    .global-audio-btn svg {
-        width: 18px;
-        height: 18px;
-    }
-
-    .media-image {
-        max-width: 85%;
-    }
-}
-
 .modal-content {
     background-color: white;
     margin: auto;
@@ -725,11 +652,4 @@ footer {
     height: 100%;
     border-radius: 8px;
     display: block;
-}
-
-.modal-transcript p {
-    font-size: 1rem;
-    color: #555;
-    text-align: justify;
-    margin-bottom: 1rem;
 }
