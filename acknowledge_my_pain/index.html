@@ -30,6 +30,22 @@
                     <div class="col-lg-3"></div>
                     <div class="col-lg-6 content-text">
                         <p>南瓜的工作經常需要搬重物，因此長期都有腰酸背痛的問題。2016 年左右，她的腰開始頻繁閃到。閃到就去復健診所治療，「好了就不理它」<strong>——這樣的「閃到才治療」模式維持了五六年。那些年，南瓜在「不痛」、止痛消炎藥、肌肉鬆弛劑與熱敷、拉腰、電療間循環</strong>。</p>
+                        
+                        <div class="expert-toggle-box">
+                            <button class="toggle-btn" onclick="toggleContent(this)">
+                                為什麼會陷入「熱敷、拉腰、電療」的無限循環？
+                            </button>
+                            <div class="toggle-content">
+                                <div class="content-inner">
+                                    <div class="video-container">
+                                        <video controls playsinline width="100%" height="auto">
+                                            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4" type="video/mp4">
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <p>直到 2022 年的某一天......</p>
                     </div>
                     <div class="col-lg-3"></div>
@@ -60,7 +76,12 @@
                         <p>過去反覆進出診所的那些年，這位治療師看她好了又復發，時間實在拖得太長 ，便主動建議她嘗試一對一的徒手治療。當時的南瓜只覺得這是推銷話術，心想「他是不是要騙我錢？」，便沒有理會。直到這次椎間盤破裂，她抱著「死馬當活馬醫」的心情回去求助。治療師帶她到治療床邊仔細評估、引導動作，沒想到這一次，疼痛竟然當場緩解了許多 。</p>
                         <p>即便是像南瓜這樣具備醫療背景、知道神經壓迫原理的衛教人員，在面對「非健保」的自費選項時，第一反應仍舊是築起防備的高牆。訪談時那句脫口而出的「騙錢」，反映的或許不只是個人的多疑，更是<strong>病患在面對醫療商業化時的普遍不安。</strong></p>
                     </div>
-                    <div class="col-lg-3"></div>
+                    <div class="col-lg-3">
+                        <div class="hint-wrapper hint-floating" onclick="openModal('qa2')">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-label">影像不等於痛</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -257,6 +278,14 @@
             </div>
         </section>
     </main>
+
+    <!-- Expert Modal -->
+    <div id="expertModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal(event)">&times;</span>
+            <div class="modal-body"></div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 此為草稿，請勿外流 </p>

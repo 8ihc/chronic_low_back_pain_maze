@@ -275,6 +275,78 @@ footer {
     text-align: center !important;
 }
 
+/* 專家觀點折疊區塊 - 低調融入版 */
+.expert-toggle-box {
+    margin: 3rem 0;
+    border: none;
+    border-left: 2px solid #e0e0e0;
+    background: transparent;
+    overflow: hidden;
+    padding-left: 15px;
+}
+
+.toggle-btn {
+    width: 100%;
+    padding: 10px 0;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 0.95rem;
+    color: #666;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toggle-btn:hover {
+    color: #2a2a2a;
+}
+
+.toggle-btn::after {
+    content: '+';
+    margin-left: auto;
+    font-size: 0.85em;
+    color: #999;
+    transition: transform 0.3s;
+    font-weight: 300;
+}
+
+.toggle-btn.active::after {
+    content: '－';
+    transform: none;
+}
+
+.toggle-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+    background: transparent;
+}
+
+.content-inner {
+    padding: 15px 0;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #2a2a2a;
+}
+
+.video-container {
+    width: 100%;
+    margin: 10px 0;
+    border-radius: 2px;
+    overflow: hidden;
+    background: #000;
+    opacity: 0.95;
+}
+
+.video-container video {
+    display: block;
+    width: 100%;
+}
+
 /* 下拉式註釋 - 報導者風格 */
 .expandable-note-trigger {
     background: none;
@@ -361,4 +433,115 @@ footer {
         height: 55px;
         font-size: 18px;
     }
+}
+
+/* 浮動提示框樣式 - demo2 風格 */
+.hint-wrapper {
+    margin: 2rem 0;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.hint-wrapper:hover {
+    transform: translateX(5px);
+}
+
+.hint-icon {
+    width: 38px;
+    height: 38px;
+    background: #544733;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 8px rgba(84, 71, 51, 0.4);
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.hint-label {
+    display: inline-block;
+    color: #2a2a2a;
+    font-weight: 600;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.hint-subtext {
+    font-size: 0.85rem;
+    color: #666;
+    margin-left: 5px;
+}
+
+/* Modal 燈箱樣式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background-color: white;
+    margin: auto;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 900px;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #aaa;
+    font-size: 36px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.modal-body h2 {
+    color: #2a2a2a;
+    margin-bottom: 15px;
+    font-family: "Noto Serif TC", Georgia, serif;
+}
+
+.modal-video-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 20px;
+}
+
+.modal-video-container video {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: block;
+}
+
+.modal-transcript p {
+    font-size: 1rem;
+    color: #555;
+    text-align: justify;
+    margin-bottom: 1rem;
 }
