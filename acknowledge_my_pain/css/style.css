@@ -66,9 +66,18 @@ strong {
     object-fit: contain;
     border-radius: 0;
     box-shadow: none;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     opacity: 0.95;
     flex-shrink: 0;
+}
+
+.image-credit {
+    font-family: "Noto Serif TC", Georgia, serif;
+    font-size: 0.75rem;
+    color: #999;
+    letter-spacing: 0.05em;
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 /* NYT-Style Audio Story Player */
@@ -192,7 +201,12 @@ strong {
     .media-image {
         max-height: 35vh;
         max-width: 85%;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+    }
+    
+    .image-credit {
+        font-size: 0.65rem;
+        margin-bottom: 12px;
     }
     
     .subtitle-text {
