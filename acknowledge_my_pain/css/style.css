@@ -47,24 +47,28 @@ strong {
 /* 滿版媒體區塊 - NYT Editorial Style */
 .full-bleed-media {
     width: 100%;
-    padding: 100px 20px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100vh;
     text-align: center;
     background: transparent;
+    overflow: hidden;
 }
 
 .media-image {
-    max-width: 50%;
+    max-width: 30%;
     width: 100%;
     height: auto;
+    max-height: 40vh;
+    object-fit: contain;
     border-radius: 0;
     box-shadow: none;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     opacity: 0.95;
+    flex-shrink: 0;
 }
 
 /* Subtitle 預留空間 */
@@ -92,39 +96,154 @@ strong {
     margin-top: 20px;
 }
 
-/* 圓形播放按鈕 - 極簡設計 */
-.play-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 1px solid rgba(26, 26, 26, 0.2);
-    color: #1a1a1a;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* NYT-Style Audio Story Player */
+.audio-story-player {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    padding: 20px;
+    position: relative;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+/* Subtitle Display - Large, Centered */
+.subtitle-display {
+    width: 100%;
+    min-height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0 40px;
+    margin-bottom: 20px;
+    flex-shrink: 1;
 }
 
-.play-btn:hover {
-    background: #f8f8f8;
+.subtitle-text {
+    font-family: "Noto Serif TC", Georgia, serif;
+    font-size: 2rem;
+    line-height: 1.6;
+    color: #1a1a1a;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
+.subtitle-text.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Progress Mute Button - NYT Style with Ring */
+.progress-mute-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1;
+}
+
+.progress-mute-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-color: rgba(26, 26, 26, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.play-btn.playing {
-    background: #1a1a1a;
-    color: #ffffff;
-    border-color: #1a1a1a;
+.progress-mute-btn:active {
+    transform: scale(0.95);
 }
 
-.play-btn.playing:hover {
-    background: #333;
-    border-color: #333;
+/* SVG Icon Styling */
+.progress-mute-btn svg,
+.global-audio-btn svg {
+    width: 28px;
+    height: 28px;
+    fill: #544733;
+    display: block;
+}
+
+.global-audio-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: #f5f5f5;
+}
+
+/* Progress Ring using conic-gradient */
+.progress-mute-btn::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    padding: 4px;
+    background: conic-gradient(
+        #10b981 calc(var(--progress) * 1%),
+        #e5e7eb calc(var(--progress) * 1%)
+    );
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+    transition: background 0.1s linear;
+}
+
+/* Hide audio element */
+.audio-element {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .full-bleed-media {
+        padding: 15px;
+    }
+    
+    .media-image {
+        max-height: 35vh;
+        max-width: 70%;
+        margin-bottom: 10px;
+    }
+    
+    .subtitle-text {
+        font-size: 1.3rem;
+        padding: 0 20px;
+    }
+    
+    .audio-story-player {
+        padding: 15px;
+    }
+    
+    .subtitle-display {
+        min-height: 100px;
+        padding: 0 20px;
+        margin-bottom: 15px;
+    }
+    
+    .progress-mute-btn {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .progress-mute-btn svg {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 /* 音檔資訊文字 */
@@ -492,6 +611,75 @@ footer {
     align-items: center;
     justify-content: center;
     padding: 20px;
+}
+
+/* Global Audio Control Button */
+.global-audio-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 60px auto 0;
+    background: #544733;
+    border: 1px solid #544733;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #ffffff;
+    cursor: pointer;
+    gap: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(84, 71, 51, 0.2);
+    width: fit-content;
+}
+
+.global-audio-btn:hover {
+    background: #6b5940;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(84, 71, 51, 0.3);
+}
+
+.global-audio-btn.muted {
+    background: #2a2a2a;
+    border-color: #2a2a2a;
+}
+
+.global-audio-btn.muted:hover {
+    background: #3d3d3d;
+}
+
+.global-audio-btn .audio-text {
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .global-audio-btn {
+        padding: 5px 14px;
+        font-size: 0.7rem;
+        margin: 50px auto 0;
+    }
+    
+    .global-audio-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .global-audio-btn {
+        padding: 6px 16px;
+        font-size: 0.8rem;
+    }
+    
+    .global-audio-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .media-image {
+        max-width: 85%;
+    }
 }
 
 .modal-content {
