@@ -141,11 +141,11 @@ function initAudioPlayers() {
             if (isGlobalMuted) {
                 btn.classList.remove('muted');
                 btn.querySelector('svg').outerHTML = SVG_VOLUME_OFF;
-                if (globalText) globalText.textContent = '點擊開啟聲音';
+                if (globalText) globalText.textContent = '開啟聲音，聆聽南瓜的故事';
             } else {
                 btn.classList.add('muted');
                 btn.querySelector('svg').outerHTML = SVG_VOLUME_UP;
-                if (globalText) globalText.textContent = '點擊關閉聲音';
+                if (globalText) globalText.textContent = '向下滑動，聆聽南瓜的故事';
             }
         });
         
@@ -411,17 +411,17 @@ function fadeOutAndStop(audioElement, subtitleText) {
 
 // Face Section Scroll Effect
 function initFaceScrollEffect() {
+    const header = document.querySelector('header');
     const faceSection = document.querySelector('.face-section');
     const img01 = document.querySelector('.img-01');
     const img02 = document.querySelector('.img-02');
-    const imgBackground = document.querySelector('.img-background');
-    const titleSlideUp = document.querySelector('.title-slide-up');
+    const headerContent = document.querySelector('.header-content');
     const leftLinesFirst = document.querySelectorAll('.intro-text-left-first .line');
     const leftLinesSecond = document.querySelectorAll('.intro-text-left-second .line');
     const leftLinesFinal = document.querySelectorAll('.intro-text-final-left .line');
     const rightLinesFinal = document.querySelectorAll('.intro-text-final-right .line');
     
-    if (!faceSection || !img01 || !img02 || !imgBackground || !titleSlideUp) return;
+    if (!header || !faceSection || !img01 || !img02) return;
     
     // 儲存每行的完整文字
     const leftTextsFirst = Array.from(leftLinesFirst).map(line => line.textContent);
@@ -431,30 +431,28 @@ function initFaceScrollEffect() {
     
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const sectionTop = faceSection.offsetTop; // section 距離頁面頂部的距離
-        const sectionHeight = faceSection.offsetHeight; // 800vh
+        const headerTop = header.offsetTop; // header 距離頁面頂部的距離
+        const sectionHeight = faceSection.offsetHeight; // 1200vh
         const windowHeight = window.innerHeight; // 100vh
         
-        // 計算 section 在視窗中的相對位置
-        const sectionScrolled = scrollTop - sectionTop; // 從 section 頂部開始計算的滾動量
+        // 計算從 header 頂部開始的滾動量
+        const sectionScrolled = scrollTop - headerTop; // 從 header 頂部開始計算的滾動量
         
-        // 階段劃分 (1000vh 總長度)：
+        // 階段劃分 (1200vh 總長度)：
         // 0-100vh: 01 完整顯示，不做任何變化
         // 100vh-200vh: 左側第一組文字逐字顯示（第一階段）
         // 200vh-300vh: 左側第一組淡出，第二組逐字顯示（第二階段）
         // 300vh-400vh: 左側第二組淡出，臉從 01 過渡到 02，同時「日」「常」淡入（第三階段）
         // 400vh-500vh: 保持 02 和「日」「常」完整顯示（第四階段）
-        // 500vh-600vh: 02 和「日」「常」淡出，background 同步淡入（第五階段）
-        // 600vh-700vh: background 保持完全顯示，標題快速淡入（第六階段）
-        // 700vh-1000vh: background 和標題保持完全顯示（第七階段，300vh 停留時間）
+        // 500vh-900vh: 臉部淡出，標題淡入（第五階段）
+        // 900vh-1200vh: 標題保持完全顯示（第六階段）
         
         if (sectionScrolled < windowHeight) {
             // 還在第一個視窗內，保持 01 完全顯示
             img01.style.opacity = 1;
             img02.style.opacity = 0;
-            imgBackground.style.opacity = 0;
-            // 隱藏標題
-            titleSlideUp.style.opacity = 0;
+            // header 內容保持透明
+            if (headerContent) headerContent.style.opacity = 0;
             // 隱藏所有文字
             leftLinesFirst.forEach(line => {
                 line.textContent = '';
@@ -485,9 +483,7 @@ function initFaceScrollEffect() {
             if (totalProgress < 0.143) {
                 img01.style.opacity = 1;
                 img02.style.opacity = 0;
-                imgBackground.style.opacity = 0;
-                // 隱藏標題
-                titleSlideUp.style.opacity = 0;
+                if (headerContent) headerContent.style.opacity = 0;
                 
                 const textProgress = totalProgress * 7; // 映射到 0-1
                 updateTextByScroll(leftLinesFirst, leftTextsFirst, textProgress);
@@ -510,9 +506,7 @@ function initFaceScrollEffect() {
             else if (totalProgress < 0.286) {
                 img01.style.opacity = 1;
                 img02.style.opacity = 0;
-                imgBackground.style.opacity = 0;
-                // 隱藏標題
-                titleSlideUp.style.opacity = 0;
+                if (headerContent) headerContent.style.opacity = 0;
                 
                 const stageProgress = (totalProgress - 0.143) * 7; // 映射到 0-1
                 
@@ -558,9 +552,7 @@ function initFaceScrollEffect() {
             }
             // 階段 3 (0.286-0.429): 分為兩個子階段
             else if (totalProgress < 0.429) {
-                imgBackground.style.opacity = 0;
-                // 隱藏標題
-                titleSlideUp.style.opacity = 0;
+                if (headerContent) headerContent.style.opacity = 0;
                 
                 const stageProgress = (totalProgress - 0.286) * 7; // 映射到 0-1
                 
@@ -621,9 +613,6 @@ function initFaceScrollEffect() {
             }
             // 階段 4 (0.429-0.571): 保持 02 和「日」「常」完整顯示
             else if (totalProgress < 0.571) {
-                // 隱藏標題
-                titleSlideUp.style.opacity = 0;
-                
                 // 左側所有文字完全隱藏
                 leftLinesFirst.forEach(line => {
                     line.textContent = '';
@@ -634,10 +623,12 @@ function initFaceScrollEffect() {
                     line.style.opacity = 0;
                 });
                 
+                // header 內容保持透明
+                if (headerContent) headerContent.style.opacity = 0;
+                
                 // 臉完全切換到 02
                 img01.style.opacity = 0;
                 img02.style.opacity = 1;
-                imgBackground.style.opacity = 0;
                 
                 // 「日」「常」完整顯示
                 leftLinesFinal.forEach((line, index) => {
@@ -649,9 +640,9 @@ function initFaceScrollEffect() {
                     line.style.opacity = 1;
                 });
             }
-            // 階段 5 (0.571-0.714): 02 和「日」「常」淡出，background 同步淡入
-            else if (totalProgress < 0.714) {
-                const fadeProgress = (totalProgress - 0.571) * 7; // 映射到 0-1
+            // 階段 5 (0.571-0.9): 前半段臉部淡出，後半段標題淡入
+            else if (totalProgress < 0.9) {
+                const fadeProgress = (totalProgress - 0.571) / (0.9 - 0.571); // 映射到 0-1 (500vh-900vh)
                 
                 // 左側所有文字完全隱藏
                 leftLinesFirst.forEach(line => {
@@ -666,62 +657,49 @@ function initFaceScrollEffect() {
                 // img01 完全隱藏
                 img01.style.opacity = 0;
                 
-                // img02 淡出
-                img02.style.opacity = 1 - fadeProgress;
-                
-                // background 同步淡入
-                imgBackground.style.opacity = fadeProgress;
-                
-                // 「日」「常」淡出
-                leftLinesFinal.forEach((line, index) => {
-                    line.textContent = leftTextsFinal[index];
-                    line.style.opacity = 1 - fadeProgress;
-                });
-                rightLinesFinal.forEach((line, index) => {
-                    line.textContent = rightTextsFinal[index];
-                    line.style.opacity = 1 - fadeProgress;
-                });
-                
-                // 標題保持隱藏
-                titleSlideUp.style.opacity = 0;
+                if (fadeProgress < 0.5) {
+                    // 前半段 (0-0.5): 臉部和「日」「常」淡出
+                    const fadeOutProgress = fadeProgress * 2; // 映射到 0-1
+                    
+                    img02.style.opacity = Math.max(0, 1 - fadeOutProgress);
+                    
+                    leftLinesFinal.forEach((line, index) => {
+                        line.textContent = leftTextsFinal[index];
+                        line.style.opacity = Math.max(0, 1 - fadeOutProgress);
+                    });
+                    rightLinesFinal.forEach((line, index) => {
+                        line.textContent = rightTextsFinal[index];
+                        line.style.opacity = Math.max(0, 1 - fadeOutProgress);
+                    });
+                    
+                    // header 內容保持隱藏
+                    if (headerContent) {
+                        headerContent.style.opacity = 0;
+                    }
+                } else {
+                    // 後半段 (0.5-1.0): 臉部完全消失，標題淡入
+                    const fadeInProgress = (fadeProgress - 0.5) * 2; // 映射到 0-1
+                    
+                    img02.style.opacity = 0;
+                    
+                    leftLinesFinal.forEach((line, index) => {
+                        line.textContent = '';
+                        line.style.opacity = 0;
+                    });
+                    rightLinesFinal.forEach((line, index) => {
+                        line.textContent = '';
+                        line.style.opacity = 0;
+                    });
+                    
+                    // header 內容淡入
+                    if (headerContent) {
+                        headerContent.style.opacity = Math.min(1, fadeInProgress);
+                    }
+                }
             }
-            // 階段 6 (0.667-0.778): background 完全顯示，標題快速淡入
-            else if (totalProgress < 0.778) {
-                const fadeProgress = (totalProgress - 0.667) / (0.778 - 0.667); // 映射到 0-1 (600vh-700vh)
-                
-                // 左側所有文字完全隱藏
-                leftLinesFirst.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-                leftLinesSecond.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-                
-                // 所有臉部圖片完全隱藏
-                img01.style.opacity = 0;
-                img02.style.opacity = 0;
-                
-                // background 保持完全顯示
-                imgBackground.style.opacity = 1;
-                
-                // 「日」「常」完全隱藏
-                leftLinesFinal.forEach((line, index) => {
-                    line.textContent = leftTextsFinal[index];
-                    line.style.opacity = 0;
-                });
-                rightLinesFinal.forEach((line, index) => {
-                    line.textContent = rightTextsFinal[index];
-                    line.style.opacity = 0;
-                });
-                
-                // 標題快速淡入
-                titleSlideUp.style.opacity = fadeProgress;
-            }
-            // 階段 7 (0.778-1.0): background 和標題保持完全顯示
+            // 階段 6 (0.9-1.0): 標題保持完全顯示
             else {
-                // 左側所有文字完全隱藏
+                // 所有文字完全隱藏
                 leftLinesFirst.forEach(line => {
                     line.textContent = '';
                     line.style.opacity = 0;
@@ -730,26 +708,23 @@ function initFaceScrollEffect() {
                     line.textContent = '';
                     line.style.opacity = 0;
                 });
+                leftLinesFinal.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                rightLinesFinal.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
                 
-                // 所有臉部圖片完全隱藏
+                // 臉部完全隱藏
                 img01.style.opacity = 0;
                 img02.style.opacity = 0;
                 
-                // background 保持完全顯示
-                imgBackground.style.opacity = 1;
-                
-                // 「日」「常」完全隱藏
-                leftLinesFinal.forEach((line, index) => {
-                    line.textContent = leftTextsFinal[index];
-                    line.style.opacity = 0;
-                });
-                rightLinesFinal.forEach((line, index) => {
-                    line.textContent = rightTextsFinal[index];
-                    line.style.opacity = 0;
-                });
-                
-                // 標題保持完全顯示
-                titleSlideUp.style.opacity = 1;
+                // header 內容完全顯示
+                if (headerContent) {
+                    headerContent.style.opacity = 1;
+                }
             }
         }
     });

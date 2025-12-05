@@ -24,51 +24,43 @@
     <!-- Project Tag -->
     <div class="project-tag">當疼痛成為日常</div>
 
-    <header style="display: none;">
-        <h1>當疼痛成為日常</h1>
-        <p>「只要不吃藥過活就還不錯」—— 她與下背痛共處的這些年</p>
-        <button id="globalAudioToggle" class="global-audio-btn" aria-label="開啟音訊">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-            <span class="audio-text">點擊開啟聲音</span>
-        </button>
-    </header>
-
     <main>
-        <!-- Face Expression Section - 500vh tall -->
-        <section class="face-section">
-            <div class="images-container">
-                <img src="images/pumpkin/01.png" alt="Base Layer" class="face-img img-01">
-                <img src="images/pumpkin/02.png" alt="Overlay Layer" class="face-img img-02">
-                <img src="images/pumpkin/background.PNG" alt="Background Layer" class="face-img img-background">
-                <div class="intro-text intro-text-left intro-text-left-first">
-                    <p class="line">這是南瓜（化名），</p>
-                    <p class="line">今年 36 歲，</p>
-                    <p class="line">在醫院擔任衛教人員的她，</p>
-                    <p class="line">是一位慢性下背痛患者。</p>
+        <header>
+            <!-- Face Expression Section - 1000vh tall -->
+            <section class="face-section">
+                <div class="images-container">
+                    <img src="images/pumpkin/01.PNG" alt="Base Layer" class="face-img img-01">
+                    <img src="images/pumpkin/02.png" alt="Overlay Layer" class="face-img img-02">
+                    <div class="intro-text intro-text-left intro-text-left-first">
+                        <p class="line">這是南瓜（化名），</p>
+                        <p class="line">今年 36 歲，</p>
+                        <p class="line">在醫院擔任衛教人員的她，</p>
+                        <p class="line">是一位慢性下背痛患者。</p>
+                    </div>
+                    <div class="intro-text intro-text-left intro-text-left-second">
+                        <p class="line">近三年來，</p>
+                        <p class="line">每當症狀惡化，</p>
+                        <p class="line">這樣的「抉擇」便成為她不得不面對的</p>
+                    </div>
+                    <div class="intro-text intro-text-left intro-text-final-left">
+                        <p class="line line-emphasis">日</p>
+                    </div>
+                    <div class="intro-text intro-text-right intro-text-final-right">
+                        <p class="line line-emphasis">常</p>
+                    </div>
                 </div>
-                <div class="intro-text intro-text-left intro-text-left-second">
-                    <p class="line">近三年來，</p>
-                    <p class="line">每當症狀惡化，</p>
-                    <p class="line">這樣的「抉擇」便成為她不得不面對的</p>
-                </div>
-                <div class="intro-text intro-text-left intro-text-final-left">
-                    <p class="line line-emphasis">日</p>
-                </div>
-                <div class="intro-text intro-text-right intro-text-final-right">
-                    <p class="line line-emphasis">常</p>
-                </div>
-
-                <!-- 標題區塊 - 從底部滑入 -->
-                <div class="title-slide-up">
-                    <h1 class="title-main">當疼痛成為日常</h1>
-                    <p class="title-subtitle">「只要不吃藥過活就還不錯」—— 她與下背痛共處的這些年</p>
-                    <button id="globalAudioToggle" class="global-audio-btn" aria-label="開啟音訊">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-                        <span class="audio-text">點擊開啟聲音</span>
-                    </button>
-                </div>
+            </section>
+            
+            <!-- Header Content - 初始透明 -->
+            <div class="header-content">
+                <h1>當疼痛成為日常</h1>
+                <p>「只要不吃藥過活就還不錯」—— 她與下背痛共處的這些年</p>
+                <button id="globalAudioToggle" class="global-audio-btn" aria-label="開啟音訊">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                    <span class="audio-text">開啟聲音，聆聽南瓜的故事</span>
+                </button>
             </div>
-        </section>
+        </header>
 
         <!-- Section 1 -->
         <section class="content-section">
