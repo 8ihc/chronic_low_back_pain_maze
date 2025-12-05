@@ -244,6 +244,15 @@ function initAudioPlayers() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                    // 檢查播放器是否在 #pumpkin-story 區域內
+                    const pumpkinStory = document.getElementById('pumpkin-story');
+                    const isInPumpkinStory = pumpkinStory && pumpkinStory.contains(playerElement);
+                    
+                    // 只有在「南瓜的故事」區域內的播放器才自動播放
+                    if (!isInPumpkinStory) {
+                        return;
+                    }
+                    
                     // Load audio when scrolled into view (only once)
                     if (!hasLoadedAudio) {
                         audioElement.preload = 'auto';
@@ -759,3 +768,62 @@ function updateTextByScroll(lines, lineTexts, progress) {
         }
     });
 }
+
+// ========== 導航栏交互功能 ==========
+$(document).ready(function() {
+    // 漢堡選單切換
+    $('#hamburger').on('click', function(e) {
+        e.stopPropagation();
+        $(this).toggleClass('active');
+        $('#navMenu').toggleClass('active');
+    });
+    
+    // 點擊選單連結後關閉選單並平滑滾動
+    $('.nav-link[href^="#"]').on('click', function(e) {
+        e.preventDefault();
+        const target = $(this).attr('href');
+        
+        // 關閉選單
+        $('#hamburger').removeClass('active');
+        $('#navMenu').removeClass('active');
+        
+        // 平滑滾動
+        if (target && target !== '#') {
+            $('html, body').animate({
+                scrollTop: $(target).offset().top
+            }, 800, 'swing');
+        }
+    });
+    
+    // 點擊選單外部關閉選單
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.navbar').length && !$(e.target).closest('.nav-menu').length) {
+            $('#hamburger').removeClass('active');
+            $('#navMenu').removeClass('active');
+        }
+    });
+    
+    // 滾動監聽：header完全離開視窗後才顯示導航栏
+    function toggleNavbarVisibility() {
+        const header = $('#thought-experiment');
+        const pumpkinStory = $('#pumpkin-story');
+        
+        if (header.length && pumpkinStory.length) {
+            const scrollTop = $(window).scrollTop();
+            const pumpkinStoryTop = pumpkinStory.offset().top;
+            
+            // 當滾動位置到達或超過「南瓜的故事」section的頂部時顯示導航栏
+            if (scrollTop >= pumpkinStoryTop - 10) {
+                $('#navbar').addClass('visible');
+            } else {
+                $('#navbar').removeClass('visible');
+            }
+        }
+    }
+    
+    // 初始檢查
+    toggleNavbarVisibility();
+    
+    // 滾動時檢查
+    $(window).on('scroll', toggleNavbarVisibility);
+});
