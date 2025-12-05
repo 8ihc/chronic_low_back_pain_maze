@@ -1,6 +1,9 @@
 $(document).ready(function() {
     // Initialize Audio Story Players
     initAudioPlayers();
+    
+    // Initialize Face Section Scroll Effect
+    initFaceScrollEffect();
 
     // 平滑滾動效果
     $('a[href^="#"]').on('click', function(e) {
@@ -124,41 +127,53 @@ function initAudioPlayers() {
     const players = document.querySelectorAll('.audio-story-player');
     console.log(`Found ${players.length} players`);
     
-    const globalToggleBtn = document.getElementById('globalAudioToggle');
+    // 獲取所有 globalAudioToggle 按鈕（可能有多個）
+    const globalToggleBtns = document.querySelectorAll('#globalAudioToggle');
     
-    // Setup global mute toggle
-    if (globalToggleBtn) {
-        console.log('✅ Global toggle button found');
-        globalToggleBtn.addEventListener('click', () => {
-            isGlobalMuted = !isGlobalMuted;
-            
-            const globalText = globalToggleBtn.querySelector('.audio-text');
+    // 定義全域切換邏輯
+    const toggleGlobalAudio = () => {
+        isGlobalMuted = !isGlobalMuted;
+        
+        // 更新所有全域按鈕的狀態
+        globalToggleBtns.forEach(btn => {
+            const globalText = btn.querySelector('.audio-text');
             
             if (isGlobalMuted) {
-                globalToggleBtn.classList.remove('muted');
-                globalToggleBtn.querySelector('svg').outerHTML = SVG_VOLUME_OFF;
-                globalText.textContent = '點擊開啟聲音';
-                // Mute all players
-                document.querySelectorAll('.audio-story-player .audio-element').forEach(audio => {
-                    audio.muted = true;
-                });
-                document.querySelectorAll('.progress-mute-btn').forEach(btn => {
-                    btn.querySelector('svg').outerHTML = SVG_VOLUME_OFF;
-                });
-                console.log('🔇 All players muted');
+                btn.classList.remove('muted');
+                btn.querySelector('svg').outerHTML = SVG_VOLUME_OFF;
+                if (globalText) globalText.textContent = '點擊開啟聲音';
             } else {
-                globalToggleBtn.classList.add('muted');
-                globalToggleBtn.querySelector('svg').outerHTML = SVG_VOLUME_UP;
-                globalText.textContent = '點擊關閉聲音';
-                // Unmute all players
-                document.querySelectorAll('.audio-story-player .audio-element').forEach(audio => {
-                    audio.muted = false;
-                });
-                document.querySelectorAll('.progress-mute-btn').forEach(btn => {
-                    btn.querySelector('svg').outerHTML = SVG_VOLUME_UP;
-                });
-                console.log('🔊 All players unmuted');
+                btn.classList.add('muted');
+                btn.querySelector('svg').outerHTML = SVG_VOLUME_UP;
+                if (globalText) globalText.textContent = '點擊關閉聲音';
             }
+        });
+        
+        // 更新所有播放器的靜音狀態
+        if (isGlobalMuted) {
+            document.querySelectorAll('.audio-story-player .audio-element').forEach(audio => {
+                audio.muted = true;
+            });
+            document.querySelectorAll('.progress-mute-btn').forEach(btn => {
+                btn.querySelector('svg').outerHTML = SVG_VOLUME_OFF;
+            });
+            console.log('🔇 All players muted');
+        } else {
+            document.querySelectorAll('.audio-story-player .audio-element').forEach(audio => {
+                audio.muted = false;
+            });
+            document.querySelectorAll('.progress-mute-btn').forEach(btn => {
+                btn.querySelector('svg').outerHTML = SVG_VOLUME_UP;
+            });
+            console.log('🔊 All players unmuted');
+        }
+    };
+    
+    // 為所有全域按鈕綁定事件
+    if (globalToggleBtns.length > 0) {
+        console.log(`✅ Found ${globalToggleBtns.length} global toggle button(s)`);
+        globalToggleBtns.forEach(btn => {
+            btn.addEventListener('click', toggleGlobalAudio);
         });
     } else {
         console.error('❌ Global toggle button NOT found');
@@ -392,4 +407,380 @@ function fadeOutAndStop(audioElement, subtitleText) {
             subtitleText.textContent = '';
         }
     }, 50);
+}
+
+// Face Section Scroll Effect
+function initFaceScrollEffect() {
+    const faceSection = document.querySelector('.face-section');
+    const img01 = document.querySelector('.img-01');
+    const img02 = document.querySelector('.img-02');
+    const imgBackground = document.querySelector('.img-background');
+    const titleSlideUp = document.querySelector('.title-slide-up');
+    const leftLinesFirst = document.querySelectorAll('.intro-text-left-first .line');
+    const leftLinesSecond = document.querySelectorAll('.intro-text-left-second .line');
+    const leftLinesFinal = document.querySelectorAll('.intro-text-final-left .line');
+    const rightLinesFinal = document.querySelectorAll('.intro-text-final-right .line');
+    
+    if (!faceSection || !img01 || !img02 || !imgBackground || !titleSlideUp) return;
+    
+    // 儲存每行的完整文字
+    const leftTextsFirst = Array.from(leftLinesFirst).map(line => line.textContent);
+    const leftTextsSecond = Array.from(leftLinesSecond).map(line => line.textContent);
+    const leftTextsFinal = Array.from(leftLinesFinal).map(line => line.textContent);
+    const rightTextsFinal = Array.from(rightLinesFinal).map(line => line.textContent);
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const sectionTop = faceSection.offsetTop; // section 距離頁面頂部的距離
+        const sectionHeight = faceSection.offsetHeight; // 800vh
+        const windowHeight = window.innerHeight; // 100vh
+        
+        // 計算 section 在視窗中的相對位置
+        const sectionScrolled = scrollTop - sectionTop; // 從 section 頂部開始計算的滾動量
+        
+        // 階段劃分 (1000vh 總長度)：
+        // 0-100vh: 01 完整顯示，不做任何變化
+        // 100vh-200vh: 左側第一組文字逐字顯示（第一階段）
+        // 200vh-300vh: 左側第一組淡出，第二組逐字顯示（第二階段）
+        // 300vh-400vh: 左側第二組淡出，臉從 01 過渡到 02，同時「日」「常」淡入（第三階段）
+        // 400vh-500vh: 保持 02 和「日」「常」完整顯示（第四階段）
+        // 500vh-600vh: 02 和「日」「常」淡出，background 同步淡入（第五階段）
+        // 600vh-700vh: background 保持完全顯示，標題快速淡入（第六階段）
+        // 700vh-1000vh: background 和標題保持完全顯示（第七階段，300vh 停留時間）
+        
+        if (sectionScrolled < windowHeight) {
+            // 還在第一個視窗內，保持 01 完全顯示
+            img01.style.opacity = 1;
+            img02.style.opacity = 0;
+            imgBackground.style.opacity = 0;
+            // 隱藏標題
+            titleSlideUp.style.opacity = 0;
+            // 隱藏所有文字
+            leftLinesFirst.forEach(line => {
+                line.textContent = '';
+                line.style.opacity = 0;
+            });
+            leftLinesSecond.forEach(line => {
+                line.textContent = '';
+                line.style.opacity = 0;
+            });
+            leftLinesFinal.forEach(line => {
+                line.textContent = '';
+                line.style.opacity = 0;
+            });
+            rightLinesFinal.forEach(line => {
+                line.textContent = '';
+                line.style.opacity = 0;
+            });
+        } else {
+            // 開始滾動效果：從 100vh 到 1000vh
+            const effectStart = windowHeight; // 100vh
+            const effectEnd = sectionHeight; // 1000vh
+            const effectDistance = effectEnd - effectStart; // 900vh
+            
+            // 計算總進度 (0 到 1)，基於 section 內的滾動量
+            const totalProgress = Math.min((sectionScrolled - effectStart) / effectDistance, 1);
+            
+            // 階段 1 (0-0.143): 左側第一組文字逐字顯示
+            if (totalProgress < 0.143) {
+                img01.style.opacity = 1;
+                img02.style.opacity = 0;
+                imgBackground.style.opacity = 0;
+                // 隱藏標題
+                titleSlideUp.style.opacity = 0;
+                
+                const textProgress = totalProgress * 7; // 映射到 0-1
+                updateTextByScroll(leftLinesFirst, leftTextsFirst, textProgress);
+                
+                // 左側第二組和右側文字隱藏
+                leftLinesSecond.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                leftLinesFinal.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                rightLinesFinal.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+            }
+            // 階段 2 (0.143-0.286): 分為兩個子階段
+            else if (totalProgress < 0.286) {
+                img01.style.opacity = 1;
+                img02.style.opacity = 0;
+                imgBackground.style.opacity = 0;
+                // 隱藏標題
+                titleSlideUp.style.opacity = 0;
+                
+                const stageProgress = (totalProgress - 0.143) * 7; // 映射到 0-1
+                
+                // 子階段 2.1 (0-0.5): 左側第一組文字淡出
+                if (stageProgress < 0.5) {
+                    const fadeProgress = stageProgress * 2; // 映射到 0-1
+                    
+                    // 左側第一組文字保持完整但淡出
+                    leftLinesFirst.forEach((line, index) => {
+                        line.textContent = leftTextsFirst[index];
+                        line.style.opacity = 1 - fadeProgress;
+                    });
+                    
+                    // 左側第二組文字完全隱藏
+                    leftLinesSecond.forEach(line => {
+                        line.textContent = '';
+                        line.style.opacity = 0;
+                    });
+                }
+                // 子階段 2.2 (0.5-1.0): 左側第二組文字逐字顯示
+                else {
+                    const textProgress = (stageProgress - 0.5) * 2; // 映射到 0-1
+                    
+                    // 左側第一組文字完全隱藏
+                    leftLinesFirst.forEach(line => {
+                        line.textContent = '';
+                        line.style.opacity = 0;
+                    });
+                    
+                    // 左側第二組文字逐字顯示
+                    updateTextByScroll(leftLinesSecond, leftTextsSecond, textProgress);
+                }
+                
+                // 最終文字隱藏
+                leftLinesFinal.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                rightLinesFinal.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+            }
+            // 階段 3 (0.286-0.429): 分為兩個子階段
+            else if (totalProgress < 0.429) {
+                imgBackground.style.opacity = 0;
+                // 隱藏標題
+                titleSlideUp.style.opacity = 0;
+                
+                const stageProgress = (totalProgress - 0.286) * 7; // 映射到 0-1
+                
+                // 左側第一組文字完全隱藏
+                leftLinesFirst.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                
+                // 子階段 3.1 (0-0.5): 左側第二組文字淡出
+                if (stageProgress < 0.5) {
+                    const fadeProgress = stageProgress * 2; // 映射到 0-1
+                    
+                    // 左側第二組文字保持完整但淡出
+                    leftLinesSecond.forEach((line, index) => {
+                        line.textContent = leftTextsSecond[index];
+                        line.style.opacity = 1 - fadeProgress;
+                    });
+                    
+                    // 臉保持 01
+                    img01.style.opacity = 1;
+                    img02.style.opacity = 0;
+                    
+                    // 最終文字隱藏
+                    leftLinesFinal.forEach(line => {
+                        line.textContent = '';
+                        line.style.opacity = 0;
+                    });
+                    rightLinesFinal.forEach(line => {
+                        line.textContent = '';
+                        line.style.opacity = 0;
+                    });
+                }
+                // 子階段 3.2 (0.5-1.0): 臉從 01 過渡到 02，同時「日」「常」淡入
+                else {
+                    const faceProgress = (stageProgress - 0.5) * 2; // 映射到 0-1
+                    
+                    // 左側第二組文字完全隱藏
+                    leftLinesSecond.forEach(line => {
+                        line.textContent = '';
+                        line.style.opacity = 0;
+                    });
+                    
+                    // 臉部過渡
+                    img01.style.opacity = 1 - faceProgress;
+                    img02.style.opacity = faceProgress;
+                    
+                    // 「日」「常」同步淡入
+                    leftLinesFinal.forEach((line, index) => {
+                        line.textContent = leftTextsFinal[index];
+                        line.style.opacity = faceProgress;
+                    });
+                    rightLinesFinal.forEach((line, index) => {
+                        line.textContent = rightTextsFinal[index];
+                        line.style.opacity = faceProgress;
+                    });
+                }
+            }
+            // 階段 4 (0.429-0.571): 保持 02 和「日」「常」完整顯示
+            else if (totalProgress < 0.571) {
+                // 隱藏標題
+                titleSlideUp.style.opacity = 0;
+                
+                // 左側所有文字完全隱藏
+                leftLinesFirst.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                leftLinesSecond.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                
+                // 臉完全切換到 02
+                img01.style.opacity = 0;
+                img02.style.opacity = 1;
+                imgBackground.style.opacity = 0;
+                
+                // 「日」「常」完整顯示
+                leftLinesFinal.forEach((line, index) => {
+                    line.textContent = leftTextsFinal[index];
+                    line.style.opacity = 1;
+                });
+                rightLinesFinal.forEach((line, index) => {
+                    line.textContent = rightTextsFinal[index];
+                    line.style.opacity = 1;
+                });
+            }
+            // 階段 5 (0.571-0.714): 02 和「日」「常」淡出，background 同步淡入
+            else if (totalProgress < 0.714) {
+                const fadeProgress = (totalProgress - 0.571) * 7; // 映射到 0-1
+                
+                // 左側所有文字完全隱藏
+                leftLinesFirst.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                leftLinesSecond.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                
+                // img01 完全隱藏
+                img01.style.opacity = 0;
+                
+                // img02 淡出
+                img02.style.opacity = 1 - fadeProgress;
+                
+                // background 同步淡入
+                imgBackground.style.opacity = fadeProgress;
+                
+                // 「日」「常」淡出
+                leftLinesFinal.forEach((line, index) => {
+                    line.textContent = leftTextsFinal[index];
+                    line.style.opacity = 1 - fadeProgress;
+                });
+                rightLinesFinal.forEach((line, index) => {
+                    line.textContent = rightTextsFinal[index];
+                    line.style.opacity = 1 - fadeProgress;
+                });
+                
+                // 標題保持隱藏
+                titleSlideUp.style.opacity = 0;
+            }
+            // 階段 6 (0.667-0.778): background 完全顯示，標題快速淡入
+            else if (totalProgress < 0.778) {
+                const fadeProgress = (totalProgress - 0.667) / (0.778 - 0.667); // 映射到 0-1 (600vh-700vh)
+                
+                // 左側所有文字完全隱藏
+                leftLinesFirst.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                leftLinesSecond.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                
+                // 所有臉部圖片完全隱藏
+                img01.style.opacity = 0;
+                img02.style.opacity = 0;
+                
+                // background 保持完全顯示
+                imgBackground.style.opacity = 1;
+                
+                // 「日」「常」完全隱藏
+                leftLinesFinal.forEach((line, index) => {
+                    line.textContent = leftTextsFinal[index];
+                    line.style.opacity = 0;
+                });
+                rightLinesFinal.forEach((line, index) => {
+                    line.textContent = rightTextsFinal[index];
+                    line.style.opacity = 0;
+                });
+                
+                // 標題快速淡入
+                titleSlideUp.style.opacity = fadeProgress;
+            }
+            // 階段 7 (0.778-1.0): background 和標題保持完全顯示
+            else {
+                // 左側所有文字完全隱藏
+                leftLinesFirst.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                leftLinesSecond.forEach(line => {
+                    line.textContent = '';
+                    line.style.opacity = 0;
+                });
+                
+                // 所有臉部圖片完全隱藏
+                img01.style.opacity = 0;
+                img02.style.opacity = 0;
+                
+                // background 保持完全顯示
+                imgBackground.style.opacity = 1;
+                
+                // 「日」「常」完全隱藏
+                leftLinesFinal.forEach((line, index) => {
+                    line.textContent = leftTextsFinal[index];
+                    line.style.opacity = 0;
+                });
+                rightLinesFinal.forEach((line, index) => {
+                    line.textContent = rightTextsFinal[index];
+                    line.style.opacity = 0;
+                });
+                
+                // 標題保持完全顯示
+                titleSlideUp.style.opacity = 1;
+            }
+        }
+    });
+}
+
+// 根據捲動進度更新文字顯示
+function updateTextByScroll(lines, lineTexts, progress) {
+    const totalLines = lines.length;
+    
+    lines.forEach((line, index) => {
+        const text = lineTexts[index];
+        const textLength = text.length;
+        
+        // 計算每一行應該在哪個進度區間顯示
+        const lineStartProgress = index / totalLines;
+        const lineEndProgress = (index + 1) / totalLines;
+        
+        if (progress < lineStartProgress) {
+            // 還沒到這一行
+            line.textContent = '';
+            line.style.opacity = 0;
+        } else if (progress >= lineEndProgress) {
+            // 這一行已完成
+            line.textContent = text;
+            line.style.opacity = 1;
+        } else {
+            // 正在顯示這一行
+            line.style.opacity = 1;
+            const lineProgress = (progress - lineStartProgress) / (lineEndProgress - lineStartProgress);
+            const charsToShow = Math.floor(lineProgress * textLength);
+            line.textContent = text.substring(0, charsToShow);
+        }
+    });
 }

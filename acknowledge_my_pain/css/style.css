@@ -2,8 +2,24 @@ body {
     font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     line-height: 1.75;
     color: #2a2a2a;
-    background-color: #f5f5f5;
+    background-color: #E0E2D5;
     letter-spacing: 0.05em;
+}
+
+/* Project Tag - 優雅低調的小標題 */
+.project-tag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    font-family: "Noto Serif TC", Georgia, serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #544733;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
 /* 標題字體 - 使用思源宋體 */
@@ -19,6 +35,148 @@ h1, h2, h3, h4, h5, h6 {
 strong {
     font-weight: 700;
     color: #1a1a1a;
+}
+
+/* 臉部表情區塊 - 1000vh 高度供捲動 */
+.face-section {
+    position: relative;
+    width: 100%;
+    height: 1000vh;  
+}
+
+/* 圖片容器 - 固定 100vh 並黏住 */
+.images-container {
+    position: sticky;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 兩張圖片的共用樣式 */
+.face-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* 滿版顯示 */
+    transition: opacity 0.3s ease;
+}
+
+/* 01.png - 一開始完全顯示 */
+.img-01 {
+    opacity: 1;
+    z-index: 1;
+}
+
+/* 02.png - 一開始隱藏，捲動時顯示 */
+.img-02 {
+    opacity: 0;
+    z-index: 2;
+}
+
+/* background.png - 最後淡入的背景圖 */
+.img-background {
+    opacity: 0;
+    z-index: 3;
+}
+
+/* 標題滑入區塊 */
+.title-slide-up {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    z-index: 5;
+    text-align: center;
+    padding: 60px 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.title-main {
+    font-family: "Noto Serif TC", Georgia, serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    color: #2a2a2a;
+}
+
+.title-subtitle {
+    font-family: "Noto Serif TC", Georgia, serif;
+    font-size: 1.3rem;
+    opacity: 0.8;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    color: #2a2a2a;
+    margin-bottom: 30px;
+}
+
+/* 介紹文字區塊 - 共用樣式 */
+.intro-text {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    max-width: 500px;
+}
+
+/* 左側文字 */
+.intro-text-left {
+    left: 5%;
+}
+
+/* 右側文字 */
+.intro-text-right {
+    right: 5%;
+    left: auto;
+}
+
+/* 最終「日」字 - 左側往中間靠 */
+.intro-text-final-left {
+    left: 15%;
+}
+
+/* 最終「常」字 - 右側往中間靠 */
+.intro-text-final-right {
+    right: 15%;
+}
+
+.intro-text .line {
+    /* 使用與 .content-section p 相同的樣式 */
+    font-family: "Noto Serif TC", "Microsoft JhengHei", sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    color: #544733;
+    text-align: justify;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* 最終「日常」特殊樣式 */
+.intro-text .line-emphasis {
+    font-weight: 700;
+    font-size: 4.4rem;
+}
+
+/* 打字機效果 - 每一行會被 JS 加上 typing class */
+.intro-text .line.typing {
+    opacity: 1;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .content-section {
@@ -256,6 +414,15 @@ strong {
     .global-audio-btn svg {
         width: 18px;
         height: 18px;
+    }
+    
+    /* 標題滑入區塊響應式 */
+    .title-main {
+        font-size: 2rem;
+    }
+    
+    .title-subtitle {
+        font-size: 1rem;
     }
 }
 
