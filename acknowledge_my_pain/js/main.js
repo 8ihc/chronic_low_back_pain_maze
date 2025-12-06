@@ -45,73 +45,6 @@ $(document).ready(function() {
     });
 });
 
-// Toggle 專家觀點區塊
-function toggleContent(button) {
-    const content = button.nextElementSibling;
-    button.classList.toggle('active');
-    
-    if (button.classList.contains('active')) {
-        content.style.maxHeight = content.scrollHeight + 'px';
-    } else {
-        content.style.maxHeight = '0';
-    }
-}
-
-// Modal 專家訪談功能
-const HINT_DATA = {
-    videoUrl: "https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4",
-    
-    'qa2': {
-        title: "影像報告與疼痛表現不一致：神經外科醫師怎麼看？",
-        speaker: "神經外科 陳則宇醫師"
-    }
-};
-
-const modal = document.getElementById('expertModal');
-const modalBody = modal ? modal.querySelector('.modal-body') : null;
-
-function openModal(hintId) {
-    if (!modal || !modalBody) return;
-    
-    const data = HINT_DATA[hintId];
-    if (!data) return;
-
-    const videoHTML = `
-        <div class="modal-video-container">
-            <video controls playsinline width="100%" height="100%" style="border-radius: 8px;">
-                <source src="${HINT_DATA.videoUrl}" type="video/mp4">
-                您的瀏覽器不支援影片播放。
-            </video>
-        </div>
-    `;
-
-    modalBody.innerHTML = `
-        <h2>${data.title}</h2>
-        <p style="color: #544733; font-weight: 600;">🎙️ 採訪對象: ${data.speaker}</p>
-        ${videoHTML}
-    `;
-    
-    modal.style.display = 'flex';
-    
-    const videoElement = modalBody.querySelector('video');
-    if(videoElement) {
-        videoElement.load();
-    }
-}
-
-function closeModal(event) {
-    if (!modal || !modalBody) return;
-    
-    if (event.target === modal || event.target.className === 'close-btn') {
-        const videoElement = modalBody.querySelector('video');
-        if (videoElement) {
-            videoElement.pause();
-            videoElement.currentTime = 0;
-        }
-        modal.style.display = 'none';
-    }
-}
-
 // ===== NYT-Style Audio Scrollytelling Module =====
 
 // SVG Icons
@@ -420,32 +353,29 @@ function fadeOutAndStop(audioElement, subtitleText) {
 
 // Face Section Scroll Effect
 function initFaceScrollEffect() {
-    const header = document.querySelector('header');
     const faceSection = document.querySelector('.face-section');
+    const faceSectionHeader = faceSection ? faceSection.querySelector('header') : null;
     const img01 = document.querySelector('.img-01');
     const img02 = document.querySelector('.img-02');
-    const headerContent = document.querySelector('.header-content');
-    const leftLinesFirst = document.querySelectorAll('.intro-text-left-first .line');
-    const leftLinesSecond = document.querySelectorAll('.intro-text-left-second .line');
+    const mainLines = document.querySelectorAll('.intro-text-main .line');
     const leftLinesFinal = document.querySelectorAll('.intro-text-final-left .line');
     const rightLinesFinal = document.querySelectorAll('.intro-text-final-right .line');
     
-    if (!header || !faceSection || !img01 || !img02) return;
+    if (!faceSection || !img01 || !img02) return;
     
     // 儲存每行的完整文字
-    const leftTextsFirst = Array.from(leftLinesFirst).map(line => line.textContent);
-    const leftTextsSecond = Array.from(leftLinesSecond).map(line => line.textContent);
+    const mainTexts = Array.from(mainLines).map(line => line.textContent);
     const leftTextsFinal = Array.from(leftLinesFinal).map(line => line.textContent);
     const rightTextsFinal = Array.from(rightLinesFinal).map(line => line.textContent);
     
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const headerTop = header.offsetTop; // header 距離頁面頂部的距離
+        const faceSectionTop = faceSection.offsetTop; // face-section 距離頁面頂部的距離
         const sectionHeight = faceSection.offsetHeight; // 1200vh
         const windowHeight = window.innerHeight; // 100vh
         
-        // 計算從 header 頂部開始的滾動量
-        const sectionScrolled = scrollTop - headerTop; // 從 header 頂部開始計算的滾動量
+        // 計算從 face-section 頂部開始的滾動量
+        const sectionScrolled = scrollTop - faceSectionTop; // 從 face-section 頂部開始計算的滾動量
         
         // 階段劃分 (1200vh 總長度)：
         // 0-100vh: 01 完整顯示，不做任何變化
@@ -458,16 +388,12 @@ function initFaceScrollEffect() {
         
         if (sectionScrolled < windowHeight) {
             // 還在第一個視窗內，保持 01 完全顯示
-            img01.style.opacity = 1;
+            img01.style.opacity = 0.8;
             img02.style.opacity = 0;
             // header 內容保持透明
-            if (headerContent) headerContent.style.opacity = 0;
+            if (faceSectionHeader) faceSectionHeader.style.opacity = 0;
             // 隱藏所有文字
-            leftLinesFirst.forEach(line => {
-                line.textContent = '';
-                line.style.opacity = 0;
-            });
-            leftLinesSecond.forEach(line => {
+            mainLines.forEach(line => {
                 line.textContent = '';
                 line.style.opacity = 0;
             });
@@ -488,66 +414,46 @@ function initFaceScrollEffect() {
             // 計算總進度 (0 到 1)，基於 section 內的滾動量
             const totalProgress = Math.min((sectionScrolled - effectStart) / effectDistance, 1);
             
-            // 階段 1 (0-0.143): 左側第一組文字逐字顯示
-            if (totalProgress < 0.143) {
-                img01.style.opacity = 1;
+            // 階段 1 (0-0.286): 所有 7 行文字逐行顯示並淡出（同一位置）
+            if (totalProgress < 0.286) {
+                img01.style.opacity = 0.8;
                 img02.style.opacity = 0;
-                if (headerContent) headerContent.style.opacity = 0;
+                if (faceSectionHeader) faceSectionHeader.style.opacity = 0;
                 
-                const textProgress = totalProgress * 7; // 映射到 0-1
-                updateTextByScroll(leftLinesFirst, leftTextsFirst, textProgress);
+                const stageProgress = totalProgress / 0.286; // 映射到 0-1
                 
-                // 左側第二組和右側文字隱藏
-                leftLinesSecond.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-                leftLinesFinal.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-                rightLinesFinal.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-            }
-            // 階段 2 (0.143-0.286): 分為兩個子階段
-            else if (totalProgress < 0.286) {
-                img01.style.opacity = 1;
-                img02.style.opacity = 0;
-                if (headerContent) headerContent.style.opacity = 0;
-                
-                const stageProgress = (totalProgress - 0.143) * 7; // 映射到 0-1
-                
-                // 子階段 2.1 (0-0.5): 左側第一組文字淡出
-                if (stageProgress < 0.5) {
-                    const fadeProgress = stageProgress * 2; // 映射到 0-1
+                // 7 行文字，每行分配 1/7 的進度空間
+                // 每行的生命週期：40% 淡入+打字，40% 停留，20% 淡出
+                mainLines.forEach((line, index) => {
+                    const lineStartProgress = index / mainLines.length;
+                    const lineEndProgress = (index + 1) / mainLines.length;
+                    const lineProgress = (stageProgress - lineStartProgress) / (lineEndProgress - lineStartProgress);
                     
-                    // 左側第一組文字保持完整但淡出
-                    leftLinesFirst.forEach((line, index) => {
-                        line.textContent = leftTextsFirst[index];
-                        line.style.opacity = 1 - fadeProgress;
-                    });
-                    
-                    // 左側第二組文字完全隱藏
-                    leftLinesSecond.forEach(line => {
+                    if (lineProgress < 0) {
+                        // 還沒到這一行
                         line.textContent = '';
                         line.style.opacity = 0;
-                    });
-                }
-                // 子階段 2.2 (0.5-1.0): 左側第二組文字逐字顯示
-                else {
-                    const textProgress = (stageProgress - 0.5) * 2; // 映射到 0-1
-                    
-                    // 左側第一組文字完全隱藏
-                    leftLinesFirst.forEach(line => {
+                    } else if (lineProgress < 0.4) {
+                        // 淡入並打字 (0-40%)
+                        const fadeInProgress = lineProgress / 0.4;
+                        line.style.opacity = fadeInProgress;
+                        const charsToShow = Math.floor(fadeInProgress * mainTexts[index].length);
+                        line.textContent = mainTexts[index].substring(0, charsToShow);
+                    } else if (lineProgress < 0.8) {
+                        // 停留顯示完整文字 (40%-80%)
+                        line.textContent = mainTexts[index];
+                        line.style.opacity = 1;
+                    } else if (lineProgress < 1) {
+                        // 淡出 (80%-100%)
+                        const fadeOutProgress = (lineProgress - 0.8) / 0.2;
+                        line.textContent = mainTexts[index];
+                        line.style.opacity = 1 - fadeOutProgress;
+                    } else {
+                        // 已經結束
                         line.textContent = '';
                         line.style.opacity = 0;
-                    });
-                    
-                    // 左側第二組文字逐字顯示
-                    updateTextByScroll(leftLinesSecond, leftTextsSecond, textProgress);
-                }
+                    }
+                });
                 
                 // 最終文字隱藏
                 leftLinesFinal.forEach(line => {
@@ -559,33 +465,25 @@ function initFaceScrollEffect() {
                     line.style.opacity = 0;
                 });
             }
-            // 階段 3 (0.286-0.429): 分為兩個子階段
+            // 階段 2 (0.286-0.429): 圖片過渡，「日」「常」淡入
             else if (totalProgress < 0.429) {
-                if (headerContent) headerContent.style.opacity = 0;
+                if (faceSectionHeader) faceSectionHeader.style.opacity = 0;
                 
-                const stageProgress = (totalProgress - 0.286) * 7; // 映射到 0-1
+                const stageProgress = (totalProgress - 0.286) / 0.143; // 映射到 0-1
                 
-                // 左側第一組文字完全隱藏
-                leftLinesFirst.forEach(line => {
+                // 所有主要文字完全隱藏
+                mainLines.forEach(line => {
                     line.textContent = '';
                     line.style.opacity = 0;
                 });
                 
-                // 子階段 3.1 (0-0.5): 左側第二組文字淡出
+                // 圖片過渡（前 50%）
                 if (stageProgress < 0.5) {
-                    const fadeProgress = stageProgress * 2; // 映射到 0-1
+                    const faceProgress = stageProgress / 0.5; // 映射到 0-1
+                    img01.style.opacity = 0.8 * (1 - faceProgress);
+                    img02.style.opacity = 0.8 * faceProgress;
                     
-                    // 左側第二組文字保持完整但淡出
-                    leftLinesSecond.forEach((line, index) => {
-                        line.textContent = leftTextsSecond[index];
-                        line.style.opacity = 1 - fadeProgress;
-                    });
-                    
-                    // 臉保持 01
-                    img01.style.opacity = 1;
-                    img02.style.opacity = 0;
-                    
-                    // 最終文字隱藏
+                    // 「日」「常」還未顯示
                     leftLinesFinal.forEach(line => {
                         line.textContent = '';
                         line.style.opacity = 0;
@@ -594,50 +492,40 @@ function initFaceScrollEffect() {
                         line.textContent = '';
                         line.style.opacity = 0;
                     });
-                }
-                // 子階段 3.2 (0.5-1.0): 臉從 01 過渡到 02，同時「日」「常」淡入
+                } 
+                // 「日」「常」淡入（後 50%）
                 else {
-                    const faceProgress = (stageProgress - 0.5) * 2; // 映射到 0-1
+                    const finalProgress = (stageProgress - 0.5) / 0.5; // 映射到 0-1
                     
-                    // 左側第二組文字完全隱藏
-                    leftLinesSecond.forEach(line => {
-                        line.textContent = '';
-                        line.style.opacity = 0;
-                    });
-                    
-                    // 臉部過渡
-                    img01.style.opacity = 1 - faceProgress;
-                    img02.style.opacity = faceProgress;
+                    // 臉部完全切換到 02
+                    img01.style.opacity = 0;
+                    img02.style.opacity = 0.8;
                     
                     // 「日」「常」同步淡入
                     leftLinesFinal.forEach((line, index) => {
                         line.textContent = leftTextsFinal[index];
-                        line.style.opacity = faceProgress;
+                        line.style.opacity = finalProgress;
                     });
                     rightLinesFinal.forEach((line, index) => {
                         line.textContent = rightTextsFinal[index];
-                        line.style.opacity = faceProgress;
+                        line.style.opacity = finalProgress;
                     });
                 }
             }
-            // 階段 4 (0.429-0.571): 保持 02 和「日」「常」完整顯示
+            // 階段 3 (0.429-0.571): 保持 02 和「日」「常」完整顯示
             else if (totalProgress < 0.571) {
-                // 左側所有文字完全隱藏
-                leftLinesFirst.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-                leftLinesSecond.forEach(line => {
+                // 所有主要文字完全隱藏
+                mainLines.forEach(line => {
                     line.textContent = '';
                     line.style.opacity = 0;
                 });
                 
                 // header 內容保持透明
-                if (headerContent) headerContent.style.opacity = 0;
+                if (faceSectionHeader) faceSectionHeader.style.opacity = 0;
                 
                 // 臉完全切換到 02
                 img01.style.opacity = 0;
-                img02.style.opacity = 1;
+                img02.style.opacity = 0.8;
                 
                 // 「日」「常」完整顯示
                 leftLinesFinal.forEach((line, index) => {
@@ -649,16 +537,12 @@ function initFaceScrollEffect() {
                     line.style.opacity = 1;
                 });
             }
-            // 階段 5 (0.571-0.9): 前半段臉部淡出，後半段標題淡入
+            // 階段 4 (0.571-0.9): 前半段臉部淡出，後半段標題淡入
             else if (totalProgress < 0.9) {
                 const fadeProgress = (totalProgress - 0.571) / (0.9 - 0.571); // 映射到 0-1 (500vh-900vh)
                 
-                // 左側所有文字完全隱藏
-                leftLinesFirst.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-                leftLinesSecond.forEach(line => {
+                // 所有主要文字完全隱藏
+                mainLines.forEach(line => {
                     line.textContent = '';
                     line.style.opacity = 0;
                 });
@@ -682,8 +566,8 @@ function initFaceScrollEffect() {
                     });
                     
                     // header 內容保持隱藏
-                    if (headerContent) {
-                        headerContent.style.opacity = 0;
+                    if (faceSectionHeader) {
+                        faceSectionHeader.style.opacity = 0;
                     }
                 } else {
                     // 後半段 (0.5-1.0): 臉部完全消失，標題淡入
@@ -701,19 +585,15 @@ function initFaceScrollEffect() {
                     });
                     
                     // header 內容淡入
-                    if (headerContent) {
-                        headerContent.style.opacity = Math.min(1, fadeInProgress);
+                    if (faceSectionHeader) {
+                        faceSectionHeader.style.opacity = Math.min(1, fadeInProgress);
                     }
                 }
             }
-            // 階段 6 (0.9-1.0): 標題保持完全顯示
+            // 階段 5 (0.9-1.0): 標題保持完全顯示
             else {
-                // 所有文字完全隱藏
-                leftLinesFirst.forEach(line => {
-                    line.textContent = '';
-                    line.style.opacity = 0;
-                });
-                leftLinesSecond.forEach(line => {
+                // 所有主要文字完全隱藏
+                mainLines.forEach(line => {
                     line.textContent = '';
                     line.style.opacity = 0;
                 });
@@ -731,8 +611,8 @@ function initFaceScrollEffect() {
                 img02.style.opacity = 0;
                 
                 // header 內容完全顯示
-                if (headerContent) {
-                    headerContent.style.opacity = 1;
+                if (faceSectionHeader) {
+                    faceSectionHeader.style.opacity = 1;
                 }
             }
         }

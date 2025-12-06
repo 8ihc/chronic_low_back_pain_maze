@@ -17,6 +17,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/face-section.css">
+    <link rel="stylesheet" href="css/pumpkin-story.css">
+    <link rel="stylesheet" href="css/ending-section.css">
 </head>
 
 <body>
@@ -40,19 +43,30 @@
     <!-- Project Tag -->
     <div class="project-tag">當疼痛成為日常</div>
 
-    <header id="thought-experiment">
-        <!-- Face Expression Section - 1000vh tall -->
-        <section class="face-section">
+    <!-- Thought Experiment Section -->
+    <section id="thought-experiment" class="content-section" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #DDDCDD;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6 content-text">
+                    <h2 style="font-family: 'Noto Serif TC', Georgia, serif; font-size: 2.5rem; margin-bottom: 30px; text-align: center;">思想實驗</h2>
+                    <p style="text-align: center; color: #666; font-size: 1.2rem;">此章節內容待補充...</p>
+                </div>
+                <div class="col-lg-3"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pumpkin Face Animation Section -->
+    <section class="face-section">
             <div class="images-container">
                 <img src="images/pumpkin/01.png" alt="Base Layer" class="face-img img-01">
                 <img src="images/pumpkin/02.png" alt="Overlay Layer" class="face-img img-02">
-                <div class="intro-text intro-text-left intro-text-left-first">
+                <div class="intro-text intro-text-main">
                     <p class="line">這是南瓜（化名），</p>
                     <p class="line">今年 36 歲，</p>
                     <p class="line">在醫院擔任衛教人員的她，</p>
                     <p class="line">是一位慢性下背痛患者。</p>
-                </div>
-                <div class="intro-text intro-text-left intro-text-left-second">
                     <p class="line">近三年來，</p>
                     <p class="line">每當症狀惡化，</p>
                     <p class="line">這樣的「抉擇」便成為她不得不面對的</p>
@@ -64,25 +78,25 @@
                     <p class="line line-emphasis">常</p>
                 </div>
             </div>
-        </section>
 
-        <!-- Header Content - 初始透明 -->
-        <div class="header-content">
-            <h1>當疼痛成為日常</h1>
-            <p>「只要不吃藥過活就還不錯」—— 她與下背痛共處的這些年</p>
-            <button id="globalAudioToggle" class="global-audio-btn" aria-label="開啟音訊">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                        d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
-                </svg>
-                <span class="audio-text">開啟聲音，聆聽南瓜的故事</span>
-            </button>
-        </div>
-    </header>
+            <!-- Header -->
+            <header>
+                <h1>當疼痛成為日常</h1>
+                <p>「只要不吃藥過活就還不錯」—— 她與下背痛共處的這些年</p>
+                <button id="globalAudioToggle" class="global-audio-btn" aria-label="開啟音訊">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+                    </svg>
+                    <span class="audio-text">開啟聲音，聆聽南瓜的故事</span>
+                </button>
+            </header>
+    </section>
 
-    <main id="pumpkin-story">
-        <!-- Section 1 -->
-        <section class="content-section">
+    <main>
+        <!-- pumpkin-story -->
+        <!-- Section 1  -->
+        <section id="pumpkin-story" class="content-section">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-3"></div>
@@ -90,23 +104,6 @@
                         <p>南瓜的工作經常需要搬重物，因此長期都有腰酸背痛的問題。2016
                             年左右，她的腰開始頻繁閃到。閃到就去復健診所治療，「好了就不理它」<strong>——這樣的「閃到才治療」模式維持了五六年。那些年，南瓜在「不痛」、止痛消炎藥、肌肉鬆弛劑與熱敷、拉腰、電療間循環</strong>。
                         </p>
-
-                        <div class="expert-toggle-box">
-                            <button class="toggle-btn" onclick="toggleContent(this)">
-                                為什麼會陷入「熱敷、拉腰、電療」的無限循環？
-                            </button>
-                            <div class="toggle-content">
-                                <div class="content-inner">
-                                    <div class="video-container">
-                                        <video controls playsinline width="100%" height="auto">
-                                            <source
-                                                src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4"
-                                                type="video/mp4">
-                                        </video>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <p>直到 2022 年的某一天......</p>
                     </div>
@@ -141,12 +138,7 @@
                         <p>即便是像南瓜這樣具備醫療背景、知道神經壓迫原理的衛教人員，在面對「非健保」的自費選項時，第一反應仍舊是築起防備的高牆。訪談時那句脫口而出的「騙錢」，反映的或許不只是個人的多疑，更是<strong>病患在面對醫療商業化時的普遍不安。</strong>
                         </p>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="hint-wrapper hint-floating" onclick="openModal('qa2')">
-                            <span class="hint-icon">💡</span>
-                            <span class="hint-label">影像不等於痛</span>
-                        </div>
-                    </div>
+                    <div class="col-lg-3"></div>
                 </div>
             </div>
         </section>
@@ -385,14 +377,6 @@
             </div>
         </section>
     </main>
-
-    <!-- Expert Modal -->
-    <div id="expertModal" class="modal" onclick="closeModal(event)">
-        <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
-            <span class="close-btn" onclick="closeModal(event)">&times;</span>
-            <div class="modal-body"></div>
-        </div>
-    </div>
 
     <footer>
         <p>&copy; 此為草稿，請勿外流 </p>

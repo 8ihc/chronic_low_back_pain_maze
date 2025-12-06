@@ -1,12 +1,69 @@
-body {
-    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-    line-height: 1.75;
-    color: #2a2a2a;
-    background-color: #DDDCDD;
-    letter-spacing: 0.05em;
+/* ========================================
+   GLOBAL STYLES - 全域樣式
+   ======================================== */
+
+/* ==================== CSS VARIABLES ==================== */
+:root {
+    /* Color Palette */
+    --bg-color: #DDDCDD;           /* 全站背景色 */
+    --bg-ending: #F2F5EE;          /* ending section 背景色 */
+    --bg-note: #f9f7f4;            /* 下拉註釋背景（全域元件） */
+    
+    --accent-color: #544733;        /* 主要強調色 */
+    --accent-hover: #6b5940;        /* 滑鼠懸停色 */
+    --accent-light: #6b5a42;        /* 下拉註釋 滑鼠懸停色 */
+    
+    --text-primary: #2a2a2a;        /* 主要文字 */
+    --text-strong: #1a1a1a;         /* 粗體文字 */
+    --text-tertiary: #999;          /* 次要文字（footer & image-credit） */
+    
+    --color-white: #ffffff;         /* 白色 */
+    --color-progress: #10b981;      /* 南瓜音頻進度條顏色 */
+    --color-progress-bg: #e5e7eb;   /* 南瓜音頻進度條背景 */
+    
+    /* Section Spacing */
+    --section-padding: 60px;
+    --section-padding-mobile: 40px;
+    
+    /* Typography */
+    --font-sans: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    --font-serif: "Noto Serif TC", Georgia, serif;
 }
 
-/* ========== 導航栏样式 ========== */
+/* ==================== GLOBAL RESETS ==================== */
+* {
+    box-sizing: border-box;
+}
+
+/* Base Typography - 基礎排版 */
+body {
+    font-family: var(--font-sans);
+    line-height: 1.75;
+    color: var(--text-primary);
+    background-color: var(--bg-color);
+    letter-spacing: 0.05em;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+strong {
+    font-weight: 700;
+    color: var(--text-strong);
+}
+
+/* ========================================
+   GLOBAL LAYOUT COMPONENTS - 全域佈局元件
+   ======================================== */
+
+/* Navigation Bar - 導航列 */
 .navbar {
     position: fixed;
     top: 20px;
@@ -95,7 +152,7 @@ body {
     font-weight: 500;
     transition: all 0.3s ease;
     border-left: 3px solid transparent;
-    font-family: "Noto Sans TC", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .nav-link:first-child {
@@ -129,144 +186,41 @@ body {
     }
 }
 
-/* Project Tag - 優雅低調的小標題 */
+/* Project Tag - 專案標籤 */
 .project-tag {
     position: absolute;
     top: 20px;
     left: 20px;
     z-index: 9999;
-    font-family: "Noto Serif TC", Georgia, serif;
+    font-family: var(--font-serif);
     font-size: 0.875rem;
     font-weight: 400;
-    color: #544733;
+    color: var(--accent-color);
     letter-spacing: 0.1em;
     opacity: 0.6;
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
-/* 標題字體 - 使用思源宋體 */
-h1, h2, h3, h4, h5, h6 {
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    line-height: 1.4;
-    color: #2a2a2a;
-}
-
-/* 強調文字 */
-strong {
-    font-weight: 700;
-    color: #1a1a1a;
-}
-
-/* 臉部表情區塊 - 1200vh 高度供捲動 */
-.face-section {
-    height: 1200vh;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: #DDDCDD;
-    z-index: 1;
-}
-
-/* 圖片容器 - 固定 100vh 並黏住 */
-.images-container {
-    position: sticky;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 2;
-}
-
-/* 兩張圖片的共用樣式 */
-.face-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;  /* 滿版顯示 */
-    transition: opacity 0.3s ease;
-}
-
-/* 01.png - 一開始完全顯示 */
-.img-01 {
-    opacity: 1;
-    z-index: 1;
-}
-
-/* 02.png - 一開始隱藏，捲動時顯示 */
-.img-02 {
-    opacity: 0;
-    z-index: 2;
-}
-
-/* 介紹文字區塊 - 共用樣式 */
-.intro-text {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 4;
-    max-width: 500px;
-}
-
-/* 左側文字 */
-.intro-text-left {
-    left: 5%;
-}
-
-/* 右側文字 */
-.intro-text-right {
-    right: 5%;
-    left: auto;
-}
-
-/* 最終「日」字 - 左側往中間靠 */
-.intro-text-final-left {
-    left: 15%;
-}
-
-/* 最終「常」字 - 右側往中間靠 */
-.intro-text-final-right {
-    right: 15%;
-}
-
-.intro-text .line {
-    /* 使用與 .content-section p 相同的樣式 */
-    font-family: "Noto Serif TC", "Microsoft JhengHei", sans-serif;
-    font-size: 1.1rem;
-    line-height: 1.8;
+/* Footer - 頁腳 */
+footer {
+    background: var(--text-strong);
+    color: var(--text-tertiary);
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 60px;
+    font-size: 0.9rem;
+    font-family: var(--font-sans);
     letter-spacing: 0.05em;
-    color: #544733;
-    text-align: justify;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    overflow: hidden;
-    white-space: nowrap;
 }
 
-/* 最終「日常」特殊樣式 */
-.intro-text .line-emphasis {
-    font-weight: 700;
-    font-size: 4.4rem;
-}
+/* ========================================
+   GLOBAL CONTENT SECTIONS - 全域內容區塊
+   ======================================== */
 
-/* 打字機效果 - 每一行會被 JS 加上 typing class */
-.intro-text .line.typing {
-    opacity: 1;
-    animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
+/* Generic Content Section - 通用內容區塊 */
 .content-section {
-    padding: 60px 0;
+    padding: var(--section-padding) 0;
     font-size: 1.1rem;
     min-height: 100vh;
     display: flex;
@@ -288,207 +242,129 @@ strong {
     letter-spacing: 0.05em;
 }
 
-/* 滿版媒體區塊 - NYT Editorial Style */
-.full-bleed-media {
-    width: 100%;
-    padding: 20px;
+/* ========================================
+   GLOBAL INTERACTIVE COMPONENTS - 全域互動元件
+   ======================================== */
+
+/* Global Audio Control Button - 全域音訊控制按鈕 */
+
+.global-audio-btn {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    text-align: center;
-    background: transparent;
-    overflow: hidden;
-}
-
-.media-image {
-    max-width: 90%;
-    width: 100%;
-    height: auto;
-    max-height: 50vh;
-    object-fit: contain;
-    border-radius: 0;
-    box-shadow: none;
-    margin-bottom: 8px;
-    opacity: 0.95;
-    flex-shrink: 0;
-}
-
-.image-credit {
-    font-family: "Noto Serif TC", Georgia, serif;
+    margin: 60px auto 0;
+    background: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-family: var(--font-sans);
     font-size: 0.75rem;
-    color: #999;
-    letter-spacing: 0.05em;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-/* NYT-Style Audio Story Player */
-.audio-story-player {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: auto;
-    padding: 20px;
-    position: relative;
-    flex-shrink: 0;
-    min-height: 0;
-}
-
-/* Subtitle Display - Large, Centered */
-.subtitle-display {
-    width: 100%;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 40px;
-    margin-bottom: 0px;
-    flex-shrink: 1;
-}
-
-.subtitle-text {
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 1.8rem;
-    line-height: 1.2;
-    color: #1a1a1a;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-}
-
-.subtitle-text.active {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Progress Mute Button - NYT Style with Ring */
-.progress-mute-btn {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: none;
+    font-weight: 500;
+    color: #ffffff;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    z-index: 1;
+    gap: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(84, 71, 51, 0.2);
+    width: fit-content;
 }
 
-.progress-mute-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+.global-audio-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(84, 71, 51, 0.3);
 }
 
-.progress-mute-btn:active {
-    transform: scale(0.95);
+.global-audio-btn.muted {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
 }
 
-/* SVG Icon Styling */
-.progress-mute-btn svg,
-.global-audio-btn svg {
-    width: 24px;
-    height: 24px;
-    fill: #544733;
-    display: block;
+.global-audio-btn.muted:hover {
+    background: #3d3d3d;
+}
+
+.global-audio-btn .audio-text {
+    font-size: 0.75rem;
 }
 
 .global-audio-btn svg {
     width: 18px;
     height: 18px;
-    fill: #DDDCDD;
+    fill: var(--bg-color);
 }
 
-/* Progress Ring using conic-gradient */
-.progress-mute-btn::before {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    padding: 4px;
-    background: conic-gradient(
-        #10b981 calc(var(--progress) * 1%),
-        #e5e7eb calc(var(--progress) * 1%)
-    );
-    -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    z-index: -1;
-    transition: background 0.1s linear;
+/* Expandable Note - 下拉式註釋（報導者風格）*/
+.expandable-note-trigger {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: inherit;
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--accent-color);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+    line-height: inherit;
+    letter-spacing: inherit;
 }
 
-/* Hide audio element */
-.audio-element {
-    display: none;
+.expandable-note-trigger:hover {
+    color: var(--accent-light);
+    border-bottom-color: var(--accent-light);
 }
 
-/* Responsive Design */
+.expandable-note-trigger:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.note-arrow {
+    display: inline-block;
+    font-size: 0.7em;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--accent-color);
+}
+
+.expandable-note-trigger[aria-expanded="true"] .note-arrow {
+    transform: rotate(180deg);
+}
+
+.expandable-note-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bg-note);
+    margin: 1rem 0;
+}
+
+.expandable-note-content.active {
+    max-height: 500px;
+}
+
+.expandable-note-content p {
+    padding: 1rem 1.5rem;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--accent-color);
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    text-align: left;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - 響應式設計
+   ======================================== */
+
+/* Mobile & Tablet Adjustments */
 @media (max-width: 768px) {
-    .full-bleed-media {
-        padding: 15px;
-    }
-    
-    .media-image {
-        max-height: 50vh;
-        max-width: 85%;
-        margin-bottom: 6px;
-    }
-    
-    .image-credit {
-        font-size: 0.65rem;
-        margin-bottom: 12px;
-    }
-    
-    .subtitle-text {
-        font-size: 1.1rem;
-        padding: 0 20px;
-    }
-    
-    .audio-story-player {
-        padding: 15px;
-    }
-    
-    .subtitle-display {
-        min-height: 60px;
-        padding: 0 20px;
-        margin-bottom: 15px;
-    }
-    
-    .progress-mute-btn {
-        width: 56px;
-        height: 56px;
-    }
-    
-    .progress-mute-btn svg {
-        width: 24px;
-        height: 24px;
-    }
-    
-    header h1 {
-        font-size: 2.5rem;
-    }
-
-    header p {
-        font-size: 1.1rem;
-    }
-
     .content-section {
         font-size: 1rem;
-        padding: 40px 15px;
+        padding: var(--section-padding-mobile) 15px;
     }
     
     .global-audio-btn {
@@ -501,438 +377,4 @@ strong {
         width: 18px;
         height: 18px;
     }
-    
-    /* 標題滑入區塊響應式 */
-    .title-main {
-        font-size: 2rem;
-    }
-    
-    .title-subtitle {
-        font-size: 1rem;
-    }
-}
-
-header {
-    background: #DDDCDD;
-    color: #2a2a2a;
-    position: relative;
-    height: 1200vh;
-}
-
-.header-content {
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    padding: 0 20px;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    z-index: 10;
-}
-
-.header-content * {
-    pointer-events: auto;
-}
-
-header h1 {
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin-bottom: 30px;
-    letter-spacing: 0.02em;
-    line-height: 1.3;
-}
-
-header p {
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 1.3rem;
-    opacity: 0.8;
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    line-height: 1.6;
-}
-
-footer {
-    background: #1a1a1a;
-    color: #999;
-    padding: 40px 20px;
-    text-align: center;
-    margin-top: 60px;
-    font-size: 0.9rem;
-    font-family: "Noto Sans TC", sans-serif;
-    letter-spacing: 0.05em;
-}
-
-/* 經典文學風格 - Ending Section */
-.ending-section {
-    background: #F2F5EE;
-    padding: 100px 20px;
-    text-align: center;
-}
-
-.ending-content {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.ending-title {
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #544733;
-    margin-bottom: 20px;
-    letter-spacing: 0.1em;
-}
-
-.ending-subtitle {
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 1.3rem;
-    font-weight: 400;
-    color: #544733;
-    margin-bottom: 60px;
-    opacity: 0.85;
-}
-
-.quote-block {
-    margin: 60px 0;
-    position: relative;
-}
-
-.quote-text {
-    margin: 0;
-    padding: 0;
-    border: none;
-}
-
-.quote-chinese {
-    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #2a2a2a;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-}
-
-.quote-english {
-    font-family: "Noto Sans TC", sans-serif;
-    font-size: 1rem;
-    font-style: normal;
-    line-height: 1.8;
-    color: #2a2a2a;
-    margin-bottom: 30px;
-    letter-spacing: 0.05em;
-}
-
-.quote-author {
-    display: block;
-    text-align: right;
-    font-family: "Noto Sans TC", sans-serif;
-    font-size: 0.9rem;
-    font-style: normal;
-    font-weight: 500;
-    color: #544733;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-top: 20px;
-}
-
-.final-wish {
-    margin-top: 60px;
-    padding-top: 40px;
-    border-top: 1px solid #544733;
-}
-
-.final-wish p {
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 1.1rem;
-    line-height: 2;
-    color: #544733;
-    margin: 0;
-    text-align: center !important;
-}
-
-/* 專家觀點折疊區塊 - 低調融入版 */
-.expert-toggle-box {
-    margin: 3rem 0;
-    border: none;
-    border-left: 2px solid #e0e0e0;
-    background: transparent;
-    overflow: hidden;
-    padding-left: 15px;
-}
-
-.toggle-btn {
-    width: 100%;
-    padding: 10px 0;
-    background: transparent;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    font-family: "Noto Sans TC", sans-serif;
-    font-size: 0.95rem;
-    color: #666;
-    transition: color 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.toggle-btn:hover {
-    color: #2a2a2a;
-}
-
-.toggle-btn::after {
-    content: '+';
-    margin-left: auto;
-    font-size: 0.85em;
-    color: #999;
-    transition: transform 0.3s;
-    font-weight: 300;
-}
-
-.toggle-btn.active::after {
-    content: '－';
-    transform: none;
-}
-
-.toggle-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
-    background: transparent;
-}
-
-.content-inner {
-    padding: 15px 0;
-    font-size: 0.95rem;
-    line-height: 1.8;
-    color: #2a2a2a;
-}
-
-.video-container {
-    width: 100%;
-    margin: 10px 0;
-    border-radius: 2px;
-    overflow: hidden;
-    background: #000;
-    opacity: 0.95;
-}
-
-.video-container video {
-    display: block;
-    width: 100%;
-}
-
-/* 下拉式註釋 - 報導者風格 */
-.expandable-note-trigger {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: inherit;
-    color: #544733;
-    border-bottom: 1px solid #544733;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.3s ease;
-    line-height: inherit;
-    letter-spacing: inherit;
-}
-
-.expandable-note-trigger:hover {
-    color: #6b5a42;
-    border-bottom-color: #6b5a42;
-}
-
-.expandable-note-trigger:focus {
-    outline: 2px solid #544733;
-    outline-offset: 2px;
-}
-
-.note-arrow {
-    display: inline-block;
-    font-size: 0.7em;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: #544733;
-}
-
-.expandable-note-trigger[aria-expanded="true"] .note-arrow {
-    transform: rotate(180deg);
-}
-
-.expandable-note-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: #f9f7f4;
-    margin: 1rem 0;
-}
-
-.expandable-note-content.active {
-    max-height: 500px;
-}
-
-.expandable-note-content p {
-    padding: 1rem 1.5rem;
-    margin: 0;
-    font-family: "Noto Serif TC", Georgia, serif;
-    font-size: 0.95rem;
-    color: #544733;
-    line-height: 1.8;
-    letter-spacing: 0.05em;
-    text-align: left;
-}
-
-/* 浮動提示框樣式 - demo2 風格 */
-.hint-wrapper {
-    margin: 2rem 0;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.3s ease;
-    display: inline-block;
-}
-
-.hint-wrapper:hover {
-    transform: translateX(5px);
-}
-
-.hint-icon {
-    width: 38px;
-    height: 38px;
-    background: #544733;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 4px 8px rgba(84, 71, 51, 0.4);
-    margin-right: 10px;
-    vertical-align: middle;
-}
-
-.hint-label {
-    display: inline-block;
-    color: #2a2a2a;
-    font-weight: 600;
-    font-size: 0.95rem;
-    vertical-align: middle;
-}
-
-.hint-subtext {
-    font-size: 0.85rem;
-    color: #666;
-    margin-left: 5px;
-}
-
-/* Modal 燈箱樣式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.9);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-/* Global Audio Control Button */
-.global-audio-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 60px auto 0;
-    background: #544733;
-    border: 1px solid #544733;
-    border-radius: 20px;
-    padding: 6px 16px;
-    font-family: "Noto Sans TC", sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #ffffff;
-    cursor: pointer;
-    gap: 5px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(84, 71, 51, 0.2);
-    width: fit-content;
-}
-
-.global-audio-btn:hover {
-    background: #6b5940;
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(84, 71, 51, 0.3);
-}
-
-.global-audio-btn.muted {
-    background: #2a2a2a;
-    border-color: #2a2a2a;
-}
-
-.global-audio-btn.muted:hover {
-    background: #3d3d3d;
-}
-
-.global-audio-btn .audio-text {
-    font-size: 0.75rem;
-}
-
-.modal-content {
-    background-color: white;
-    margin: auto;
-    padding: 30px;
-    border-radius: 12px;
-    max-width: 900px;
-    max-height: 90%;
-    overflow-y: auto;
-    position: relative;
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    color: #aaa;
-    font-size: 36px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close-btn:hover {
-    color: #000;
-}
-
-.modal-body h2 {
-    color: #2a2a2a;
-    margin-bottom: 15px;
-    font-family: "Noto Serif TC", Georgia, serif;
-}
-
-.modal-video-container {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    margin-bottom: 20px;
-}
-
-.modal-video-container video {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    display: block;
 }
