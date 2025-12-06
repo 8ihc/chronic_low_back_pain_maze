@@ -33,7 +33,7 @@
 
 /* 01.png - 一開始完全顯示 */
 .img-01 {
-    opacity: 0.7;
+    opacity: 0.8;
     z-index: 1;
 }
 
@@ -72,7 +72,7 @@
 
 /* 最終「日」字 - 左側往中間靠 */
 .intro-text-final-left {
-    left: 18%;
+    left: 20%;
     top: 15%;
 }
 
