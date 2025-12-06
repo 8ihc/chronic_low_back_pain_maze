@@ -139,9 +139,9 @@ function initAudioPlayers() {
                 <p class="subtitle-text">${subtitles.length > 0 ? '' : '無字幕資料'}</p>
             </div>
             <button class="progress-mute-btn" aria-label="Toggle mute" style="--progress: 0">
-                ${SVG_VOLUME_OFF}
+                ${isGlobalMuted ? SVG_VOLUME_OFF : SVG_VOLUME_UP}
             </button>
-            <audio class="audio-element" preload="none" muted>
+            <audio class="audio-element" preload="none">
                 <source src="${audioSrc}" type="audio/mp4">
                 <source src="${audioSrc}" type="audio/x-m4a">
             </audio>
@@ -152,9 +152,13 @@ function initAudioPlayers() {
         const subtitleText = playerElement.querySelector('.subtitle-text');
         const muteButton = playerElement.querySelector('.progress-mute-btn');
         
+        // 根據全域狀態設置初始靜音狀態
+        audioElement.muted = isGlobalMuted;
+        
         let currentSubtitleIndex = -1;
         let isPlaying = false;
         let hasLoadedAudio = false;
+        let playDebounceTimer = null; // Debounce 計時器
         
         // Mute button click handler
         muteButton.addEventListener('click', () => {
@@ -176,15 +180,10 @@ function initAudioPlayers() {
         // Intersection Observer for scrollytelling
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                console.log(`👁️ Player ${playerId}: intersecting=${entry.isIntersecting}, ratio=${entry.intersectionRatio.toFixed(2)}`);
+                
                 if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-                    // 檢查播放器是否在 #pumpkin-story 區域內
-                    const pumpkinStory = document.getElementById('pumpkin-story');
-                    const isInPumpkinStory = pumpkinStory && pumpkinStory.contains(playerElement);
-                    
-                    // 只有在「南瓜的故事」區域內的播放器才自動播放
-                    if (!isInPumpkinStory) {
-                        return;
-                    }
+                    console.log(`📍 Player ${playerId}: isPlaying=${isPlaying}`);
                     
                     // Load audio when scrolled into view (only once)
                     if (!hasLoadedAudio) {
@@ -193,26 +192,56 @@ function initAudioPlayers() {
                         console.log(`📥 Loading audio for player ${playerId}`);
                     }
                     
-                    // Player is in view - start playing
-                    if (!isPlaying) {
-                        stopAllPlayers();
+                    // Player is in view - 使用 debounce 延遲播放
+                    if (!isPlaying && !playDebounceTimer) {
+                        console.log(`⏱️ Player ${playerId}: Setting debounce timer (1000ms)`);
                         
-                        // ✨ 如果這首歌已經播完了(或接近結尾)，強制重頭開始
-                        // 這樣回捲體驗會更好
-                        if (audioElement.currentTime >= audioElement.duration - 0.5) {
-                            audioElement.currentTime = 0;
-                            currentSubtitleIndex = -1;
-                            subtitleText.textContent = '';
-                        }
-                        
-                        audioElement.play().catch(err => {
-                            console.log('Auto-play prevented:', err);
-                        });
-                        isPlaying = true;
+                        playDebounceTimer = setTimeout(() => {
+                            console.log(`▶️ Player ${playerId}: Debounce completed, attempting to play`);
+                            stopAllPlayers();
+                            
+                            // ✨ 如果這首歌已經播完了(或接近結尾)，強制重頭開始
+                            if (audioElement.currentTime >= audioElement.duration - 0.5) {
+                                audioElement.currentTime = 0;
+                                currentSubtitleIndex = -1;
+                                subtitleText.textContent = '';
+                            }
+                            
+                            // 標記為正在播放
+                            isPlaying = true;
+                            playDebounceTimer = null;
+                            
+                            // 根據全域靜音狀態設置音訊元素
+                            audioElement.muted = isGlobalMuted;
+                            console.log(`🔊 Player ${playerId}: muted=${audioElement.muted}`);
+                            
+                            // 嘗試播放
+                            audioElement.play().then(() => {
+                                console.log(`✅ Player ${playerId}: Playing successfully`);
+                            }).catch(err => {
+                                console.log(`❌ Player ${playerId}: Auto-play prevented, trying muted:`, err.message);
+                                // 瀏覽器阻止了自動播放，改為靜音播放
+                                audioElement.muted = true;
+                                muteButton.querySelector('svg').outerHTML = SVG_VOLUME_OFF;
+                                return audioElement.play().then(() => {
+                                    console.log(`✅ Player ${playerId}: Playing muted successfully`);
+                                }).catch(err2 => {
+                                    console.error(`❌ Player ${playerId}: Failed to play even when muted:`, err2.message);
+                                    isPlaying = false;
+                                });
+                            });
+                        }, 1000); // 延遲 1000ms (1秒)
                     }
                 } else {
-                    // Player is out of view - fade out and pause
+                    // Player is out of view - 清除 debounce 計時器並停止播放
+                    if (playDebounceTimer) {
+                        console.log(`🚫 Player ${playerId}: Clearing debounce timer (scrolled away)`);
+                        clearTimeout(playDebounceTimer);
+                        playDebounceTimer = null;
+                    }
+                    
                     if (isPlaying) {
+                        console.log(`⏸️ Player ${playerId}: Stopping playback`);
                         fadeOutAndStop(audioElement, subtitleText);
                         isPlaying = false;
                     }
@@ -651,11 +680,23 @@ function updateTextByScroll(lines, lineTexts, progress) {
 
 // ========== 導航栏交互功能 ==========
 $(document).ready(function() {
-    // 漢堡選單切換
-    $('#hamburger').on('click', function(e) {
+    // 索引標籤狀態管理
+    let isOpen = false;
+    let scrollTimer = null;
+    let isIndexTabVisible = true;
+    
+    // 索引標籤切換
+    $('#indexTab').on('click', function(e) {
         e.stopPropagation();
-        $(this).toggleClass('active');
-        $('#navMenu').toggleClass('active');
+        isOpen = !isOpen;
+        
+        if (isOpen) {
+            $(this).addClass('active');
+            $('#navMenu').addClass('active');
+        } else {
+            $(this).removeClass('active');
+            $('#navMenu').removeClass('active');
+        }
     });
     
     // 點擊選單連結後關閉選單並平滑滾動
@@ -664,7 +705,8 @@ $(document).ready(function() {
         const target = $(this).attr('href');
         
         // 關閉選單
-        $('#hamburger').removeClass('active');
+        isOpen = false;
+        $('#indexTab').removeClass('active');
         $('#navMenu').removeClass('active');
         
         // 平滑滾動
@@ -678,10 +720,35 @@ $(document).ready(function() {
     // 點擊選單外部關閉選單
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.navbar').length && !$(e.target).closest('.nav-menu').length) {
-            $('#hamburger').removeClass('active');
+            isOpen = false;
+            $('#indexTab').removeClass('active');
             $('#navMenu').removeClass('active');
         }
     });
+    
+    // 滾動時自動隱藏/顯示索引標籤（當選單未開啟時）
+    function handleIndexTabAutoHide() {
+        if (isOpen) return; // 如果選單開啟，不自動隱藏
+        
+        // 顯示索引標籤
+        if (!isIndexTabVisible) {
+            $('#indexTab').css('opacity', '1');
+            isIndexTabVisible = true;
+        }
+        
+        // 清除之前的計時器
+        if (scrollTimer) {
+            clearTimeout(scrollTimer);
+        }
+        
+        // 設定新計時器：停止滾動 2 秒後隱藏
+        scrollTimer = setTimeout(function() {
+            if (!isOpen) {
+                $('#indexTab').css('opacity', '0');
+                isIndexTabVisible = false;
+            }
+        }, 2000);
+    }
     
     // 滾動監聽：header完全離開視窗後才顯示導航栏
     function toggleNavbarVisibility() {
@@ -699,6 +766,9 @@ $(document).ready(function() {
                 $('#navbar').removeClass('visible');
             }
         }
+        
+        // 處理索引標籤自動隱藏
+        handleIndexTabAutoHide();
     }
     
     // 初始檢查
