@@ -5,26 +5,44 @@
 /* ==================== CSS VARIABLES ==================== */
 :root {
     /* Color Palette */
-    --bg-color: #DDDCDD;           /* 全站背景色 */
-    --bg-ending: #F2F5EE;          /* ending section 背景色 */
-    --bg-note: #f9f7f4;            /* 下拉註釋背景（全域元件） */
-    
-    --accent-color: #544733;        /* 主要強調色 */
-    --accent-hover: #6b5940;        /* 滑鼠懸停色 */
-    --accent-light: #6b5a42;        /* 下拉註釋 滑鼠懸停色 */
-    
-    --text-primary: #2a2a2a;        /* 主要文字 */
-    --text-strong: #1a1a1a;         /* 粗體文字 */
-    --text-tertiary: #999;          /* 次要文字（footer & image-credit） */
-    
-    --color-white: #ffffff;         /* 白色 */
-    --color-progress: #D9B91A;      /* 南瓜音頻進度條顏色 */
-    --color-progress-bg: #e5e7eb;   /* 南瓜音頻進度條背景 */
-    
+    --bg-content: #DDDCDD;
+    /* 內容區背景色 */
+    --bg-chapter:#cdcbcd;
+    /* 章節背景色 */
+    --bg-ending: #F2F5EE;
+    /* ending section 背景色 */
+    --bg-note: #f9f7f4;
+    /* 下拉註釋背景（全域元件） */
+    --bg-voice: #E5E0DC;
+    /* full-bleed-media (語音播放區)背景色 */
+    --bg-bridge: #E5E0DC;
+    /* 轉場區背景色 */
+
+    --accent-color: #544733;
+    /* 主要強調色 */
+    --accent-hover: #6b5940;
+    /* 滑鼠懸停色 */
+    --accent-light: #6b5a42;
+    /* 下拉註釋 滑鼠懸停色 */
+
+    --text-primary: #2a2a2a;
+    /* 主要文字 */
+    --text-strong: #1a1a1a;
+    /* 粗體文字 */
+    --text-tertiary: #999;
+    /* 次要文字（footer & image-credit） */
+
+    --color-white: #ffffff;
+    /* 白色 */
+    --color-progress: #D9B91A;
+    /* 南瓜音頻進度條顏色 */
+    --color-progress-bg: #e5e7eb;
+    /* 南瓜音頻進度條背景 */
+
     /* Section Spacing */
     --section-padding: 60px;
     --section-padding-mobile: 40px;
-    
+
     /* Typography */
     --font-sans: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     --font-serif: "Noto Serif TC", Georgia, serif;
@@ -40,13 +58,18 @@ body {
     font-family: var(--font-sans);
     line-height: 1.75;
     color: var(--text-primary);
-    background-color: var(--bg-color);
+    background-color: var(--bg-content);
     letter-spacing: 0.05em;
     margin: 0;
     padding: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-serif);
     font-weight: 700;
     letter-spacing: 0.03em;
@@ -79,6 +102,7 @@ strong {
     pointer-events: auto;
 }
 
+/* Index Tab & Side Navigation Menu - 目錄標籤與側邊選單 */
 .index-tab {
     position: fixed;
     left: 0;
@@ -115,50 +139,6 @@ strong {
 
 .index-tab.active {
     left: 280px;
-}
-
-@media (max-width: 768px) {
-    .index-tab {
-        width: 30px;
-        height: 90px;
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
-    }
-    
-    .index-tab:hover {
-        width: 34px;
-    }
-    
-    .index-text {
-        font-size: 13px;
-        letter-spacing: 0.25em;
-    }
-    
-    .index-tab.active {
-        left: 220px;
-    }
-}
-
-@media (max-width: 480px) {
-    .index-tab {
-        width: 28px;
-        height: 80px;
-        border-top-right-radius: 7px;
-        border-bottom-right-radius: 7px;
-    }
-    
-    .index-tab:hover {
-        width: 32px;
-    }
-    
-    .index-text {
-        font-size: 12px;
-        letter-spacing: 0.2em;
-    }
-    
-    .index-tab.active {
-        left: 200px;
-    }
 }
 
 .nav-menu {
@@ -204,23 +184,6 @@ strong {
     background: rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 768px) {
-    .nav-menu {
-        width: 220px;
-    }
-}
-
-@media (max-width: 480px) {
-    .nav-menu {
-        width: 200px;
-    }
-    
-    .nav-link {
-        padding: 12px 25px;
-        font-size: 15px;
-    }
-}
-
 /* Project Tag - 專案標籤 */
 .project-tag {
     position: absolute;
@@ -253,7 +216,99 @@ footer {
    GLOBAL CONTENT SECTIONS - 全域內容區塊
    ======================================== */
 
-/* Generic Content Section - 通用內容區塊 */
+/* 滿版容器 - 轉場、章節區塊 */
+.fullscreen-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    /* padding: 0 20px; */
+    
+    /* 讓裡面的東西永遠死死地定在正中間 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+}
+
+/* 轉場設計 */
+.fullscreen-wrapper.section-bridge {
+    width: 100%;
+    min-height: 100vh;
+    padding: 0 20px;
+
+    background: linear-gradient(to bottom,
+            var(--bg-content) 0%,
+            var(--bg-bridge) 15%,
+            var(--bg-bridge) 85%,
+            var(--bg-bridge) 100%);
+}
+
+.bridge-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.bridge-content .text-intro {
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    color: #555;
+}
+
+.bridge-content .text-punchline {
+    font-size: 4rem;
+    font-weight: 900;
+    margin-top: 1rem;
+    letter-spacing: 0.1em;
+}
+
+/* 章節設計 */
+.fullscreen-wrapper.section-chapter {
+    width: 100%;
+    min-height: 100vh;
+    padding: 0 20px;
+
+    background: linear-gradient(to bottom,
+            var(--bg-chapter) 0%,
+            var(--bg-chapter) 50%,
+            var(--bg-content) 85%,
+            var(--bg-content) 100%);
+}
+
+.chapter-content {
+    text-align: center;
+    position: relative; /* 為了做一些裝飾定位 */
+}
+
+.chapter-content .chapter-number {
+    font-family: var(--font-sans); /* 用無襯線體顯示數字比較現代 */
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 1rem;
+    display: block; /* 獨佔一行 */
+}
+
+.chapter-content .chapter-title {
+    font-family: var(--font-serif);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #000;
+    line-height: 1.3;
+}
+
+/* 裝飾：例如標題下面有一條細線 */
+.chapter-content::after {
+    content: '';
+    display: block;
+    width: 55px;
+    height: 2px;
+    background-color: var(--text-tertiary); /* 或用你的主題色 */
+    margin: 2rem auto 0; /* 設在標題下方 */
+}
+
+/* Content Section - 文字區塊 */
 .content-section {
     padding: var(--section-padding) 0;
     font-size: 1.1rem;
@@ -325,7 +380,7 @@ footer {
 .global-audio-btn svg {
     width: 18px;
     height: 18px;
-    fill: var(--bg-color);
+    fill: var(--bg-content);
 }
 
 /* Expandable Note - 下拉式註釋（報導者風格）*/
@@ -391,25 +446,271 @@ footer {
     text-align: left;
 }
 
+/* 滿版媒體區塊 - NYT Editorial Style */
+.full-bleed-media {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    overflow: hidden;
+    /* 0% - 15% : 從冷灰 (#DDDCDD) 慢慢變成 暖灰 (#E2DCD9)
+       15% - 85%: 中間大部分區域維持 暖灰 (#E2DCD9)
+       85% - 100%: 從暖灰 (#E2DCD9) 慢慢變回 冷灰 (#DDDCDD)
+    */
+    background: linear-gradient(to bottom,
+            var(--bg-content) 0%,
+            var(--bg-voice) 15%,
+            var(--bg-voice) 85%,
+            var(--bg-content) 100%);
+}
+
+.media-image {
+    max-width: 90%;
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    object-fit: contain;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 8px;
+    opacity: 0.95;
+    flex-shrink: 0;
+}
+
+.image-credit {
+    font-family: var(--font-serif);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* NYT-Style Audio Story Player */
+.audio-story-player {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    padding: 20px;
+    position: relative;
+    flex-shrink: 0;
+    min-height: 0;
+}
+
+/* Subtitle Display - Large, Centered */
+.subtitle-display {
+    width: 100%;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    margin-bottom: 0px;
+    flex-shrink: 1;
+}
+
+.subtitle-text {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    line-height: 1.2;
+    color: var(--text-strong);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
+.subtitle-text.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Progress Mute Button - NYT Style with Ring */
+.progress-mute-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-white);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1;
+}
+
+.progress-mute-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.progress-mute-btn:active {
+    transform: scale(0.95);
+}
+
+/* SVG Icon Styling */
+.progress-mute-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--accent-color);
+    display: block;
+}
+
+/* Progress Ring using conic-gradient */
+.progress-mute-btn::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    padding: 4px;
+    background: conic-gradient(var(--color-progress) calc(var(--progress) * 1%),
+            var(--color-progress-bg) calc(var(--progress) * 1%));
+    -webkit-mask:
+        linear-gradient(var(--color-white) 0 0) content-box,
+        linear-gradient(var(--color-white) 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+    transition: background 0.1s linear;
+}
+
+/* Hide audio element */
+.audio-element {
+    display: none;
+}
+
 /* ========================================
    RESPONSIVE DESIGN - 響應式設計
    ======================================== */
 
-/* Mobile & Tablet Adjustments */
 @media (max-width: 768px) {
+    .index-tab {
+        width: 30px;
+        height: 90px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .index-tab:hover {
+        width: 34px;
+    }
+
+    .index-text {
+        font-size: 13px;
+        letter-spacing: 0.25em;
+    }
+
+    .index-tab.active {
+        left: 220px;
+    }
+
+    .nav-menu {
+        width: 220px;
+    }
+
     .content-section {
         font-size: 1rem;
         padding: var(--section-padding-mobile) 15px;
     }
-    
+
     .global-audio-btn {
         padding: 6px 16px;
         font-size: 0.8rem;
         margin: 50px auto 0;
     }
-    
+
     .global-audio-btn svg {
         width: 18px;
         height: 18px;
+    }
+
+    .full-bleed-media {
+        padding: 15px;
+        background: linear-gradient(to bottom,
+                var(--bg-content) 0%,
+                var(--bg-voice) 15%,
+                var(--bg-voice) 85%,
+                var(--bg-content) 100%);
+    }
+
+    .media-image {
+        max-height: 50vh;
+        max-width: 85%;
+        margin-bottom: 6px;
+    }
+
+    .image-credit {
+        font-size: 0.65rem;
+        margin-bottom: 12px;
+    }
+
+    .subtitle-text {
+        font-size: 1.1rem;
+        padding: 0 20px;
+    }
+
+    .audio-story-player {
+        padding: 15px;
+    }
+
+    .subtitle-display {
+        min-height: 60px;
+        padding: 0 20px;
+        margin-bottom: 15px;
+    }
+
+    .progress-mute-btn {
+        width: 56px;
+        height: 56px;
+    }
+
+    .progress-mute-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .index-tab {
+        width: 28px;
+        height: 80px;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+    }
+
+    .index-tab:hover {
+        width: 32px;
+    }
+
+    .index-text {
+        font-size: 12px;
+        letter-spacing: 0.2em;
+    }
+
+    .index-tab.active {
+        left: 200px;
+    }
+
+    .nav-menu {
+        width: 200px;
+    }
+
+    .nav-link {
+        padding: 12px 25px;
+        font-size: 15px;
     }
 }

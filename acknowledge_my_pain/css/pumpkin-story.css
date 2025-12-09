@@ -2,186 +2,93 @@
    Pumpkin Story Specific Style
    ======================================== */
 
-/* 滿版媒體區塊 - NYT Editorial Style */
-.full-bleed-media {
+/* ========================================
+   Scrolling Text (Marquee) Effect
+   ======================================== */
+/* 外層容器：控制高度與隱藏溢出 */
+.scrolling-text-wrapper {
     width: 100%;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    text-align: center;
-    background: transparent;
     overflow: hidden;
+    margin-bottom: 1.5rem;
+    padding: 0;
+    
+    display: flex;
+    flex-direction: column; /* 讓文字垂直排列（變成兩行） */
+    gap: 10px; /* 兩行之間的距離 */
+
+    min-height: 100vh;
+    justify-content: center;
+
+    background: linear-gradient(to bottom, 
+        var(--bg-content) 0%, 
+        var(--bg-voice) 15%, 
+        var(--bg-voice) 85%, 
+        var(--bg-content) 100%
+        );   
 }
 
-.media-image {
-    max-width: 90%;
-    width: 100%;
-    height: auto;
-    max-height: 50vh;
-    object-fit: contain;
-    border-radius: 0;
-    box-shadow: none;
-    margin-bottom: 8px;
-    opacity: 0.95;
-    flex-shrink: 0;
-}
-
-.image-credit {
+/* 通用的文字跑馬燈設定 */
+.scrolling-text {
     font-family: var(--font-serif);
-    font-size: 0.75rem;
-    color: var(--text-tertiary);
-    letter-spacing: 0.05em;
-    margin-bottom: 10px;
-    text-align: center;
+    font-weight: 900;
+    white-space: nowrap;
+    width: fit-content; /* 讓寬度剛好包住文字 */
+
+    /* 初始狀態：在畫面右側外面 */
+    transform: translateX(100vw); 
+
+    
+    /* 動畫設定：10秒跑完一輪，線性速度，無限循環 */
+    /* animation: scroll-left 5s linear infinite; */
+
+    /* 確保過渡平滑 */
+    will-change: transform;
 }
 
-/* NYT-Style Audio Story Player */
-.audio-story-player {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: auto;
-    padding: 20px;
-    position: relative;
-    flex-shrink: 0;
-    min-height: 0;
+/* ★ 新增這一段：當擁有 active class 時，才開始跑動畫 ★ */
+.scrolling-text.active {
+    animation: scroll-left 6s linear infinite;
 }
 
-/* Subtitle Display - Large, Centered */
-.subtitle-display {
-    width: 100%;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 40px;
-    margin-bottom: 0px;
-    flex-shrink: 1;
+/* --- 第一行：焦慮 (天啊！我好尿遁喔) --- */
+.line-1 {
+    font-size: 5rem;  
+    color: #2a2a2a;         
 }
 
-.subtitle-text {
-    font-family: var(--font-serif);
-    font-size: 1.8rem;
-    line-height: 1.2;
-    color: var(--text-strong);
-    text-align: center;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    font-weight: 400;
-    letter-spacing: 0.02em;
+/* --- 第二行：無奈 (然後我就算了) --- */
+.line-2 {
+    font-size: 2.5rem;   
+    color: #666;         
+   
+    /* 也可以讓第二行稍微錯開位置，不要對得太齊，更有層次感 */
+    /* margin-left: 10%;  */
 }
 
-.subtitle-text.active {
-    opacity: 1;
-    transform: translateY(0);
+/* ★ 新增這一段：line-2 的延遲設定 ★ */
+.line-2.active {
+    animation-delay: 2.5s;
 }
 
-/* Progress Mute Button - NYT Style with Ring */
-.progress-mute-btn {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--color-white);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    z-index: 1;
+/* 定義動畫：從右邊畫面外(100vw) 跑到 左邊畫面外(-100%) */
+@keyframes scroll-left {
+    0% {
+        transform: translateX(100vw);
+    }
+    100% {
+        transform: translateX(-120%); /* 確保完全跑出左邊界 */
+    }
 }
 
-.progress-mute-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-
-.progress-mute-btn:active {
-    transform: scale(0.95);
-}
-
-/* SVG Icon Styling */
-.progress-mute-btn svg {
-    width: 24px;
-    height: 24px;
-    fill: var(--accent-color);
-    display: block;
-}
-
-/* Progress Ring using conic-gradient */
-.progress-mute-btn::before {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    padding: 4px;
-    background: conic-gradient(
-        var(--color-progress) calc(var(--progress) * 1%),
-        var(--color-progress-bg) calc(var(--progress) * 1%)
-    );
-    -webkit-mask: 
-        linear-gradient(var(--color-white) 0 0) content-box, 
-        linear-gradient(var(--color-white) 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    z-index: -1;
-    transition: background 0.1s linear;
-}
-
-/* Hide audio element */
-.audio-element {
-    display: none;
-}
 
 /* Responsive Design for Pumpkin Story */
 @media (max-width: 768px) {
-    .full-bleed-media {
-        padding: 15px;
-    }
     
-    .media-image {
-        max-height: 50vh;
-        max-width: 85%;
-        margin-bottom: 6px;
+
+    .line-1 { font-size: 3rem; }
+    .line-2 { 
+        animation-delay: 1s; 
+        font-size: 2rem;
     }
-    
-    .image-credit {
-        font-size: 0.65rem;
-        margin-bottom: 12px;
-    }
-    
-    .subtitle-text {
-        font-size: 1.1rem;
-        padding: 0 20px;
-    }
-    
-    .audio-story-player {
-        padding: 15px;
-    }
-    
-    .subtitle-display {
-        min-height: 60px;
-        padding: 0 20px;
-        margin-bottom: 15px;
-    }
-    
-    .progress-mute-btn {
-        width: 56px;
-        height: 56px;
-    }
-    
-    .progress-mute-btn svg {
-        width: 24px;
-        height: 24px;
-    }
+    .scrolling-text { animation-duration: 4s; }
 }
