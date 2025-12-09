@@ -18,7 +18,7 @@
     --text-tertiary: #999;          /* 次要文字（footer & image-credit） */
     
     --color-white: #ffffff;         /* 白色 */
-    --color-progress: #999;      /* 南瓜音頻進度條顏色 */
+    --color-progress: #D9B91A;      /* 南瓜音頻進度條顏色 */
     --color-progress-bg: #e5e7eb;   /* 南瓜音頻進度條背景 */
     
     /* Section Spacing */
@@ -334,7 +334,7 @@ footer {
     border: none;
     padding: 0;
     margin: 0;
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: inherit;
     color: var(--accent-color);
     border-bottom: 1px solid var(--accent-color);
