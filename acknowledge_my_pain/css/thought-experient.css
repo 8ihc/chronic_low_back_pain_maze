@@ -1,0 +1,541 @@
+/* === Thought Experiment Section CSS === */
+
+/* --- 1. 基礎設定 --- */
+#thought-experiment {
+    position: relative;
+    /* 這裡不設 padding，因為我們要精準控制 sticky 高度 */
+    padding: 0; 
+}
+
+/* --- 2. Scrollytelling 架構 --- */
+/* 這是包裹整個敘事過程的長容器，高度決定「這場電影要捲多久」 */
+.cinema-scroll-track {
+    position: relative;
+    height: 500vh; /* 4倍螢幕高，提供捲動空間 */
+}
+
+/* 這是黏性視窗：當使用者捲動時，它會卡在螢幕正中間 */
+.sticky-viewport {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh; /* 佔滿一個螢幕高 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    z-index: 5; /* 確保在底層 */
+}
+
+/* --- 3. 電影螢幕設計 --- */
+.cinema-screen-frame {
+    width: 100vw;
+    aspect-ratio: 16/9; /* 電影比例 */
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* 加上一層暗角濾鏡，讓圖片更有電影感，且字幕更清楚 */
+.cinema-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0,0,0,0) 20%, rgba(0,0,0,0.8) 100%);
+    z-index: 2;
+    animation: 
+        projector-jitter 0.2s infinite steps(2); /* steps(2) 讓變化更跳躍、不連續 */
+    opacity: 0.8; /* 基礎透明度 */
+}
+
+/* 定義光影隨機抖動 (快速閃爍) */
+@keyframes projector-jitter {
+    0% { transform: translateX(0px) translateY(0px); }
+    25% { transform: translateX(1px) translateY(0px); opacity: 0.75; }
+    50% { transform: translateX(0px) translateY(1px); opacity: 0.85; }
+    75% { transform: translateX(-1px) translateY(0px); opacity: 0.7; }
+    100% { transform: translateX(0px) translateY(0px); }
+}
+
+/* --- 4. 字幕樣式 --- */
+.subtitle-container {
+    position: absolute;
+    bottom: 15vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+    padding: 0 20px;
+}
+
+.movie-subtitle {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.5); /* 給字幕一點背景，閱讀更清楚 */
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    letter-spacing: 0.05em;
+    
+    /* 動畫設定 */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* 當加上 active class 時，字幕浮現 */
+.movie-subtitle.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- 5. 隱形觸發點 (Scroll Triggers) --- */
+/* 這些是看不到的區塊，負責在使用者捲動時觸發 JS */
+.scroll-step {
+    position: absolute;
+    width: 100%;
+    height: 100vh; /* 每一個步驟大約是一個螢幕的捲動距離 */
+    pointer-events: none; /* 讓滑鼠可以直接穿透 */
+    pointer-events: none; /* 這一行很重要！讓使用者可以滑動 */
+    z-index: 10;
+}
+
+/* 設定每個步驟的位置 */
+.step-1 { top: 0; }
+.step-2 { top: 100vh; }
+.step-3 { top: 200vh; }
+.step-4 { top: 300vh; } 
+.step-5 { top: 400vh; } /* 最後一步 */
+
+/* --- 6. 卡片區塊 (捲完電影後才出現) --- */
+.cards-section-wrapper {
+    position: relative;
+    z-index: 20;
+    min-height: 100vh; /* 至少一螢幕高 */
+    padding: 100px 0; /* 上下留白 */
+    
+    /* 讓內容在這一屏垂直置中 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 這裡沿用之前的卡片樣式 */
+.te-cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.te-card-wrapper {
+    background-color: transparent;
+    width: 300px;
+    height: 420px;
+    perspective: 1000px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.te-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.te-card-wrapper.flipped .te-card-inner { transform: rotateY(180deg); }
+
+.te-card-front, .te-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.te-card-front {
+    background-color: var(--accent-color);
+}
+
+.te-card-front h3 {
+    font-family: var(--font-serif);
+    font-size: 4rem;
+    color: var(--accent-color);
+    filter: brightness(1.5);
+    margin-bottom: 0.5rem;
+}
+
+.te-card-front p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--color-white);
+    margin-bottom: 0;
+}
+
+.te-instruction {
+    font-size: 0.8rem;
+    color: #888;
+    border: 1px solid #666;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 1.5rem;
+    display: inline-block;
+}
+
+.te-card-back {
+    background-color: var(--bg-note);
+    color: var(--text-primary);
+    transform: rotateY(180deg);
+}
+
+.te-feedback-title {
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+    position: relative;
+}
+
+.te-feedback-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--accent-color);
+    margin: 10px auto 0;
+}
+
+.te-feedback-text {
+    font-size: 1rem;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+/* RWD */
+@media (max-width: 768px) {
+    .movie-subtitle { font-size: 1.1rem; padding: 6px 10px; width: 90%; }
+    .te-card-wrapper { width: 100%; max-width: 320px; height: 380px; }
+}
+
+/* === Intro Section (固定背景 + 文字浮現版) === */
+
+#intro {
+    position: relative;
+    width: 100%;
+    /* 這裡不需要設定高度，高度會由文字軌道撐開 */
+}
+
+/* 1. 視差背景層 (Sticky Layer) */
+.intro-sticky-layer {
+    position: sticky; /* 關鍵：黏性定位 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* 佔滿一個螢幕高 */
+    z-index: 1;    /* 層級較低，在底部 */
+    overflow: hidden;
+}
+
+/* 背景圖設定 (含呼吸動畫) */
+/* .intro-bg-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    /* 全圖呼吸動畫 */
+    /* animation: pain-breathing 6s infinite ease-in-out; */
+/* }  */
+
+/* @keyframes pain-breathing {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); } 
+    100% { transform: scale(1); }
+} */
+
+
+/* 2. 捲動軌道 (Scroll Track) */
+.intro-scroll-track {
+    /* position: relative; */
+    /* z-index: 5; 關鍵：層級比背景高，確保文字浮在上面 */
+    margin-top: -100vh; 
+    
+    padding-bottom: 20vh; /* 底部留白緩衝 */
+}
+
+/* 3. 文字區塊  */
+.intro-text-block {
+    width: 100%;
+    height: 100vh; /* 關鍵：強制佔滿視窗高度 */
+    
+    /* 讓文字在自己的 100vh 裡置中 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 20px; /* 手機版防切邊 */
+
+    /* === 動畫初始狀態 (隱藏) === */
+    opacity: 0;
+    transform: translateY(40px); /* 從下面一點點浮上來 */
+    transition: opacity 1s ease-out, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.intro-text-block.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 4. 字體設定 */
+.intro-text {
+    /* color: var(--text-primary); */
+    font-family: var(--font-sans); /* 記得用你的襯線體 */
+    font-weight: 500;
+    line-height: 3;
+    color: var(--text-primary);
+    text-align: center;
+    letter-spacing: 0.05em;
+    
+    /* margin-bottom: 2rem; */
+    /* white-space: normal; */
+    /* word-break: normal; */
+}
+
+/* RWD: 手機版調整 */
+@media (max-width: 768px) {
+    .intro-text-block {
+        align-items: center;
+        /* padding: 0 30px; */
+        text-align: center;
+        /* 手機版背景圖可能會比較亂，加深文字底色 */
+        /* background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, transparent 70%);  */
+    }
+}
+
+/* css/your-section.css */
+
+/* === 特殊狀態：內心獨白氣泡層 (沉重壓抑版) === */
+.inner-thoughts-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+    /* 加入一點整體濾鏡，讓背景稍微模糊，聚焦在沈重的情緒上 */
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 1s ease;
+}
+
+/* 當氣泡出現時，背景稍微糊掉，增加窒息感 */
+.inner-thoughts-container.active {
+    backdrop-filter: blur(2px);
+}
+
+/* 氣泡本體設計 - 改為深色、沉重風格 */
+.thought-bubble {
+    position: absolute;
+        
+    /* 字體設定：白色襯線體，更有戲劇張力 */
+    color: var(--bg-note);
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    
+    padding: 12px 24px;
+    border-radius: 4px; /* 直角微圓，不再是可愛的圓潤造型 */
+    
+    /* 初始狀態：隱藏且稍微下沉 */
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    
+    /* 讓它有一種「毛玻璃」的混濁感 */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    
+    /* 動畫：緩慢浮現，不像之前那樣輕快彈跳 */
+    transition: all 1.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* 各個氣泡的位置 (錯落散佈) */
+.t1 { top: 25%; left: 10%; }
+.t2 { top: 20%; right: 15%; }
+.t3 { bottom: 30%; left: 20%; }
+.t4 { bottom: 40%; right: 10%; }
+.t5 { top: 50%; left: 50%; } 
+
+/* === 啟動狀態 (Active) === */
+.inner-thoughts-container.active .thought-bubble {
+    opacity: 1;
+    transform: translateY(0) scale(1); /* 緩慢歸位 */
+}
+
+/* 針對每個氣泡做微調，讓出現的時間錯開，像雜訊一樣干擾 */
+.inner-thoughts-container.active .t1 { transition-delay: 0.1s; }
+.inner-thoughts-container.active .t2 { transition-delay: 0.3s; }
+.inner-thoughts-container.active .t3 { transition-delay: 0.5s; }
+.inner-thoughts-container.active .t4 { transition-delay: 0.2s; }
+.inner-thoughts-container.active .t5 { transition-delay: 0.7s; }
+
+/* === Outro Scrollytelling (背景固定修正版) === */
+
+/* 1. 外層容器 */
+.outro-container {
+    position: relative;
+    width: 100%;
+    /* background-color: #0d0d0d; */
+    /* ⚠️ 關鍵：這裡盡量不要設 overflow: hidden，以免 sticky 失效 */
+}
+
+/* 2. 固定背景層 (Sticky Layer) */
+.outro-sticky-layer {
+    position: sticky; /* 鎖定 */
+    top: 0;           /* 鎖定在視窗頂部 */
+    left: 0;
+    width: 100%;
+    height: 100vh;    /* 高度必須佔滿一螢幕 */
+    z-index: 1;       /* 在最底層 */
+    overflow: hidden; /* 圖片裁切 */
+}
+
+/* 背景圖片設定 */
+.outro-bg-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 0.7;
+}
+
+/* 黑色遮罩 */
+.outro-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #0d0d0d 0%, rgba(13,13,13,0.3) 50%, #0d0d0d 100%);
+    pointer-events: none;
+}
+
+/* 3. 捲動軌道 (Scroll Track) */
+.outro-scroll-track {
+    position: relative;
+    z-index: 5; /* 在背景之上 */
+    margin-top: -100vh; 
+    
+    padding-bottom: 10vh;
+}
+
+/* 4. 文字區塊設定 */
+.outro-text-block {
+    height: 100vh; /* 每個區塊佔滿一螢幕，確保滑動距離足夠 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    /* 初始隱藏 */
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.outro-text-block.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 字體樣式 */
+.outro-text-block p {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+    /* text-shadow: 0 2px 10px rgba(0,0,0,0.8); */
+}
+
+.outro-text-block .small-note {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #bbb;
+}
+
+.outro-text-block .final-question {
+    font-size: 2.5rem;
+    text-shadow: 0 0 30px rgba(255,255,255,0.3);
+}
+
+/* === 重點特效：淺色底 + 黑色文字版 === */
+.red-spot {
+    display: inline;
+    position: relative;
+    color: var(--text-primary);
+    
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.6;
+    padding: 4px 12px;
+
+    background-image: linear-gradient(to right, rgba(224, 224, 224, 0.95), rgba(224, 224, 224, 0.95));
+    
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    background-position: left center;
+    
+    /* 3. 動畫：同時改變背景寬度 與 文字顏色 */
+    transition: 
+        background-size 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+        color 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 4. 啟動狀態 */
+.outro-text-block.active .red-spot {
+    /* 背景變滿 */
+    background-size: 100% 100%;
+    
+    /* 5. 文字變色：變成純黑色 (因為背景變淺了) */
+    color: #000000;
+    
+    transition-delay: 0.5s;
+}
+
+/* RWD 手機版微調 */
+@media (max-width: 768px) {
+    .red-spot {
+        font-size: 1.6rem;
+        padding: 2px 8px;
+        line-height: 1.8;
+    }
+}
+
+
+.outro-container {
+    background: linear-gradient(
+        to bottom,
+        var(--bg-content) 0%,
+        var(--bg-bridge) 40%,
+        var(--bg-content) 100%
+    );
+}
