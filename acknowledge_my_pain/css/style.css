@@ -206,7 +206,7 @@ footer {
     color: var(--text-tertiary);
     padding: 40px 20px;
     text-align: center;
-    margin-top: 60px;
+    margin-top: 0px;
     font-size: 0.9rem;
     font-family: var(--font-sans);
     letter-spacing: 0.05em;
